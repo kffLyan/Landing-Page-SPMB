@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SMK Budi Bakti Ciwidey</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: 'Poppins', sans-serif; }
+    h1, h2, h3, h4, h5, h6 { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+
+    .hero-section {
+      background: url('assets/halaman1.jpeg') center/cover no-repeat;
+      position: relative;
+    }
+    .hero-section::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 25, 60, 0.65);
+    }
+    .hero-section > * { position: relative; z-index: 1; }
+
+    .benefit-section {
+      background: url('assets/halaman2.jpg') center/cover no-repeat;
+      position: relative;
+    }
+    .benefit-section::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(20, 35, 75, 0.72);
+    }
+    .benefit-section > * { position: relative; z-index: 1; }
+
+    .testimoni-section {
+      background: url('assets/atas.png') center top/cover no-repeat;
+      position: relative;
+    }
+    .testimoni-section::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(20, 35, 75, 0.72);
+    }
+    .testimoni-section > * { position: relative; z-index: 1; }
+
+    .program-blue {
+      background: url('assets/kunjin_br.jpeg') center/cover no-repeat;
+      position: relative;
+    }
+    .program-blue::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(30, 90, 200, 0.78);
+    }
+    .program-yellow {
+      background: url('assets/kunjin_rpl.jpeg') center/cover no-repeat;
+      position: relative;
+    }
+    .program-yellow::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(210, 160, 20, 0.82);
+    }
+    .program-red {
+      background: url('assets/kunjin_dkv.jpeg') center/cover no-repeat;
+      position: relative;
+    }
+    .program-red::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(190, 30, 30, 0.80);
+    }
+    .program-blue > *, .program-yellow > *, .program-red > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .navbar { background: #0f1940; }
+    html { scroll-behavior: smooth; }
+
+    .step-badge {
+      background: #2d6fa8;
+      border-radius: 8px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* ── JURUSAN SWIPE PANEL ── */
+    .jurusan-wrapper {
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .jurusan-wrapper.grabbing {
+      cursor: grabbing;
+    }
+    .jurusan-inner {
+      display: flex;
+      width: 200%;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .jurusan-inner.no-transition {
+      transition: none;
+    }
+    .jurusan-wrapper.open .jurusan-inner {
+      transform: translateX(-50%);
+    }
+    .jurusan-front,
+    .jurusan-detail {
+      width: 50%;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .detail-blue   { background: #1a4faa; }
+    .detail-yellow { background: #b8820e; }
+    .detail-red    { background: #a81a1a; }
+
+    /* Swipe hint indicator */
+    .swipe-hint {
+      position: absolute;
+      bottom: 14px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 3;
+      pointer-events: none;
+      animation: hintPulse 2s ease-in-out infinite;
+    }
+    .swipe-hint span {
+      color: rgba(255,255,255,0.7);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .swipe-hint svg {
+      width: 18px;
+      height: 18px;
+      color: rgba(255,255,255,0.7);
+      animation: swipeArrow 1.6s ease-in-out infinite;
+    }
+    @keyframes swipeArrow {
+      0%, 100% { transform: translateX(0); opacity: 0.5; }
+      50%       { transform: translateX(5px); opacity: 1; }
+    }
+    @keyframes hintPulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.6; }
+    }
+    /* Hide hint when open */
+    .jurusan-wrapper.open .swipe-hint { display: none; }
+
+    /* Back hint in detail panel */
+    .back-hint {
+      position: absolute;
+      bottom: 14px;
+      left: 16px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 3;
+      pointer-events: none;
+      animation: hintPulse 2s ease-in-out infinite;
+    }
+    .back-hint span {
+      color: rgba(255,255,255,0.7);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .back-hint svg {
+      width: 18px;
+      height: 18px;
+      color: rgba(255,255,255,0.7);
+      animation: backArrow 1.6s ease-in-out infinite;
+    }
+    @keyframes backArrow {
+      0%, 100% { transform: translateX(0); opacity: 0.5; }
+      50%       { transform: translateX(-5px); opacity: 1; }
+    }
+    /* Show back hint only when open */
+    .back-hint { display: none; }
+    .jurusan-wrapper.open .back-hint { display: flex; }
+
+    /* Dot indicators */
+    .dot-indicators {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      transition: background 0.3s, transform 0.3s;
+    }
+    .dot.active {
+      background: rgba(255,255,255,0.95);
+      transform: scale(1.3);
+    }
+
+    /* Avatar */
+    .avatar-img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.6);
+      flex-shrink: 0;
+      object-fit: cover;
+      background: rgba(255,255,255,0.15);
+    }
+    .avatar-fallback {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.6);
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    /* Mobile nav */
+    #mobileMenu {
+      transform: translateX(100%);
+      transition: transform 0.3s ease-in-out;
+    }
+    #mobileMenu.open { transform: translateX(0); }
+    #menuOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 39;
+    }
+    #menuOverlay.open { display: block; }
+
+    .benefit-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.22);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .benefit-icon svg {
+      width: 26px;
+      height: 26px;
+      color: white;
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800 overflow-x-hidden">
+
+  <!-- ── NAVBAR ── -->
+  <nav class="navbar fixed top-0 left-0 right-0 z-50 px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <img
+        id="schoolLogo"
+        src="assets/logobbc.png"
+        alt="Logo SMK Budi Bakti Ciwidey"
+        class="w-10 h-10 rounded-full object-cover flex-shrink-0"
+        onerror="this.style.display='none'"
+      />
+      <span class="text-white font-semibold text-sm">SMK Budi Bakti Ciwidey</span>
+    </div>
+    <button id="menuBtn" class="text-white leading-none focus:outline-none w-8 h-8 flex items-center justify-center" onclick="openMenu()" aria-label="Toggle menu">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+  </nav>
+
+  <div id="menuOverlay" onclick="closeMenu()"></div>
+
+  <!-- ── MOBILE MENU ── -->
+  <div id="mobileMenu" class="fixed top-0 right-0 z-40 w-72 h-full bg-[#1A3D63] shadow-2xl flex flex-col pt-24 px-6">
+    <button onclick="closeMenu()" class="absolute top-5 right-5 text-white/70 hover:text-white transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+    <div class="flex flex-col gap-6">
+      <a href="#program"   onclick="closeMenu()" class="text-white text-xl font-semibold hover:text-[#4A7FA7] transition">Jurusan</a>
+      <a href="#masalah"   onclick="closeMenu()" class="text-white text-xl font-semibold hover:text-[#4A7FA7] transition">Masalah</a>
+      <a href="#benefit"   onclick="closeMenu()" class="text-white text-xl font-semibold hover:text-[#4A7FA7] transition">Keuntungan</a>
+      <a href="#alur"      onclick="closeMenu()" class="text-white text-xl font-semibold hover:text-[#4A7FA7] transition">Langkah-langkah</a>
+      <a href="#testimoni" onclick="closeMenu()" class="text-white text-xl font-semibold hover:text-[#4A7FA7] transition">Testimoni</a>
+      <a href="#footer"    onclick="closeMenu()" class="mt-4 bg-[#4A7FA7] text-white py-3 rounded-full font-bold text-center hover:bg-[#B3CFE5] hover:text-[#0A1931] transition">
+        Daftar Sekarang
+      </a>
+    </div>
+  </div>
+
+  <!-- ── HERO ── -->
+  <section class="hero-section min-h-screen flex flex-col items-center justify-center text-center px-6 pt-16 pb-10">
+    <h1 class="text-white text-3xl font-extrabold leading-tight mb-3">
+      SMK BUDI BAKTI<br>CIWIDEY
+    </h1>
+    <p class="text-white/80 text-sm mb-16">Cerdas Teknologi, Kuat Karakter, Siap Dunia Kerja</p>
+    <div class="w-full max-w-xs flex flex-col gap-4">
+      <a href="#footer" class="bg-blue-900 text-white text-sm font-semibold tracking-widest rounded-full py-4 px-6 text-center hover:bg-blue-800 transition">
+        DAFTAR SEKARANG
+      </a>
+      <a href="#program" class="border-2 border-white text-white text-sm font-semibold tracking-widest rounded-full py-4 px-6 text-center hover:bg-white hover:text-blue-900 transition">
+        LIHAT JURUSAN
+      </a>
+    </div>
+  </section>
+
+  <!-- ── PROGRAM KEAHLIAN ── -->
+  <section id="program">
+    <div class="bg-white py-5 text-center">
+      <h2 class="font-bold text-base tracking-wide text-gray-800">PROGRAM KEAHLIAN</h2>
+      <p class="text-gray-400 text-xs mt-1">Geser kartu untuk melihat detail jurusan</p>
+    </div>
+
+    <!-- ── CARD 1: Rekayasa Perangkat Lunak ── -->
+    <div class="jurusan-wrapper" id="wrap-rpl">
+      <div class="jurusan-inner" id="inner-rpl">
+        <!-- FRONT -->
+        <div class="jurusan-front program-yellow px-6 py-10 min-h-[280px] flex flex-col justify-end">
+          <h3 class="text-white font-extrabold text-2xl leading-tight mb-3">REKAYASA<br>PERANGKAT LUNAK</h3>
+          <p class="text-white/80 text-sm leading-relaxed">
+            Mempelajari pemrograman, pengembangan website, aplikasi, dan sistem informasi menggunakan teknologi modern serta praktik industri digital.
+          </p>
+        </div>
+        <!-- DETAIL -->
+        <div class="jurusan-detail detail-yellow px-6 py-8 flex flex-col">
+          <h3 class="text-white font-extrabold text-xl leading-tight mb-2">REKAYASA<br>PERANGKAT LUNAK</h3>
+          <p class="text-white/70 text-xs leading-relaxed mb-5">
+            Mencetak programmer dan developer yang kreatif, inovatif, dan siap bersaing di dunia teknologi.
+          </p>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-white font-bold text-xs tracking-wide mb-3">KOMPETENSI UTAMA</p>
+              <ul class="space-y-2">
+                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Pemrograman Website &amp; Aplikasi</li>
+                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Pembuatan UI/UX Design</li>
+                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Database &amp; Sistem Informasi</li>
+                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Praktik Project Berbasis Industri</li>
+                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Sertifikasi Kompetensi IT</li>
+              </ul>
+            </div>
+            <div>
+              <p class="text-white font-bold text-xs tracking-wide mb-3">PELUANG KARIR</p>
+              <ul class="space-y-2">
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Web Developer</li>
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Mobile Developer</li>
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>UI/UX Designer</li>
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Software Engineer</li>
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>IT Support</li>
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Freelancer Digital</li>
+              </ul>
+            </div>
+          </div>
+          <!-- back hint -->
+          <div class="back-hint">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+            </svg>
+            <span>Geser kembali</span>
+          </div>
+        </div>
+      </div>
+      <!-- Swipe hint on front -->
+      <div class="swipe-hint">
+        <span>Geser</span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </div>
+      <!-- Dot indicators -->
+      <div class="dot-indicators">
+        <div class="dot active" id="dot-rpl-0"></div>
+        <div class="dot" id="dot-rpl-1"></div>
+      </div>
+    </div>
+
+    <!-- ── CARD 2: Bisnis Retail ── -->
+    <div class="jurusan-wrapper" id="wrap-bisnis">
+      <div class="jurusan-inner" id="inner-bisnis">
+        <!-- FRONT -->
+        <div class="jurusan-front program-blue px-6 py-10 min-h-[280px] flex flex-col justify-end">
+          <h3 class="text-white font-extrabold text-2xl leading-tight mb-3">BISNIS RETAIL<br>PEMASARAN</h3>
+          <p class="text-white/80 text-sm leading-relaxed">
+            Mempelajari pengelolaan bisnis, pemasaran, pelayanan pelanggan, dan manajemen penjualan dengan sistem retail modern.
+          </p>
+        </div>
+        <!-- DETAIL -->
+        <div class="jurusan-detail detail-blue px-6 py-8 flex flex-col">
+          <h3 class="text-white font-extrabold text-xl leading-tight mb-2">BISNIS<br>RETAIL</h3>
+          <p class="text-white/70 text-xs leading-relaxed mb-5">
+            Mencetak tenaga bisnis retail yang profesional, komunikatif, dan siap kerja di dunia usaha maupun industri.
+          </p>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-white font-bold text-xs tracking-wide mb-3">KOMPETENSI UTAMA</p>
+              <ul class="space-y-2">
+                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Manajemen Toko Retail</li>
+                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Pelayanan Konsumen Profesional</li>
+                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Administrasi &amp; Kasir Digital</li>
+                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Strategi Pemasaran Produk</li>
+                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Praktik Kewirausahaan Retail</li>
+              </ul>
+            </div>
+            <div>
+              <p class="text-white font-bold text-xs tracking-wide mb-3">PELUANG KARIR</p>
+              <ul class="space-y-2">
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Kasir Modern</li>
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Staff Minimarket</li>
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Sales Promotion</li>
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Admin Penjualan</li>
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Supervisor Retail</li>
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Wirausaha</li>
+              </ul>
+            </div>
+          </div>
+          <div class="back-hint">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+            </svg>
+            <span>Geser kembali</span>
+          </div>
+        </div>
+      </div>
+      <div class="swipe-hint">
+        <span>Geser</span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </div>
+      <div class="dot-indicators">
+        <div class="dot active" id="dot-bisnis-0"></div>
+        <div class="dot" id="dot-bisnis-1"></div>
+      </div>
+    </div>
+
+    <!-- ── CARD 3: Desain Komunikasi Visual ── -->
+    <div class="jurusan-wrapper" id="wrap-dkv">
+      <div class="jurusan-inner" id="inner-dkv">
+        <!-- FRONT -->
+        <div class="jurusan-front program-red px-6 py-10 min-h-[280px] flex flex-col justify-end">
+          <h3 class="text-white font-extrabold text-2xl leading-tight mb-3">DESAIN KOMUNIKASI<br>VISUAL</h3>
+          <p class="text-white/80 text-sm leading-relaxed">
+            Mempelajari desain grafis, ilustrasi digital, fotografi, videografi, dan branding kreatif menggunakan software industri kreatif.
+          </p>
+        </div>
+        <!-- DETAIL -->
+        <div class="jurusan-detail detail-red px-6 py-8 flex flex-col">
+          <h3 class="text-white font-extrabold text-xl leading-tight mb-2">DESAIN KOMUNIKASI<br>VISUAL</h3>
+          <p class="text-white/70 text-xs leading-relaxed mb-5">
+            Mencetak desainer kreatif yang mampu menghasilkan karya visual menarik dan komunikatif sesuai kebutuhan industri modern.
+          </p>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-white font-bold text-xs tracking-wide mb-3">KOMPETENSI UTAMA</p>
+              <ul class="space-y-2">
+                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Desain Grafis Digital</li>
+                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Editing Foto &amp; Video</li>
+                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Branding &amp; Konten Kreatif</li>
+                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Fotografi dan Videografi</li>
+                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Praktik Industri Kreatif</li>
+              </ul>
+            </div>
+            <div>
+              <p class="text-white font-bold text-xs tracking-wide mb-3">PELUANG KARIR</p>
+              <ul class="space-y-2">
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Graphic Designer</li>
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Content Creator</li>
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Video Editor</li>
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Illustrator</li>
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Fotografer</li>
+                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Creative Designer</li>
+              </ul>
+            </div>
+          </div>
+          <div class="back-hint">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+            </svg>
+            <span>Geser kembali</span>
+          </div>
+        </div>
+      </div>
+      <div class="swipe-hint">
+        <span>Geser</span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </div>
+      <div class="dot-indicators">
+        <div class="dot active" id="dot-dkv-0"></div>
+        <div class="dot" id="dot-dkv-1"></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── MASALAH & SOLUSI ── -->
+  <section id="masalah" class="bg-gray-50 px-5 py-10">
+    <div class="bg-white rounded-2xl shadow-sm p-6 mb-5">
+      <h3 class="font-bold text-center text-sm mb-4">MASALAH YANG SERING DIHADAPI</h3>
+      <ul class="space-y-2 text-sm text-gray-600">
+        <li class="flex items-start gap-2"><span class="text-gray-400 mt-0.5">•</span> Kurangnya informasi tentang sekolah kejuruan yang tepat dan berkualitas</li>
+        <li class="flex items-start gap-2"><span class="text-gray-400 mt-0.5">•</span> Sulit memilih jurusan yang sesuai minat, bakat, dan kemampuan</li>
+        <li class="flex items-start gap-2"><span class="text-gray-400 mt-0.5">•</span> Fasilitas sekolah kurang diketahui oleh calon siswa dan orang tua</li>
+        <li class="flex items-start gap-2"><span class="text-gray-400 mt-0.5">•</span> Proses pendaftaran yang terasa rumit dan kurang jelas informasinya</li>
+      </ul>
+    </div>
+    <div class="bg-white rounded-2xl shadow-sm p-6">
+      <h3 class="font-bold text-center text-sm mb-6">SOLUSI</h3>
+      <div class="space-y-6">
+        <div class="flex gap-4">
+          <div class="step-badge">1</div>
+          <div>
+            <p class="font-bold text-sm mb-1">Informasi Sekolah yang Lengkap</p>
+            <p class="text-sm text-gray-500 leading-relaxed">Website sekolah yang lengkap dan mudah diakses memudahkan calon siswa dan orang tua mengetahui informasi jurusan, fasilitas, kegiatan, prestasi, dan proses pendaftaran.</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <div class="step-badge">2</div>
+          <div>
+            <p class="font-bold text-sm mb-1">Penjelasan Jurusan &amp; Peluang Karir</p>
+            <p class="text-sm text-gray-500 leading-relaxed">Setiap jurusan dijelaskan beserta peluang kariernya agar siswa lebih mudah menentukan pilihan sesuai minat, bakat, dan kemampuan yang dimiliki.</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <div class="step-badge">3</div>
+          <div>
+            <p class="font-bold text-sm mb-1">Fasilitas Sekolah yang Transparan</p>
+            <p class="text-sm text-gray-500 leading-relaxed">Fasilitas sekolah ditampilkan melalui foto, video, dan deskripsi informatif sehingga calon siswa dan orang tua mengetahui sarana pembelajaran yang tersedia.</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <div class="step-badge">4</div>
+          <div>
+            <p class="font-bold text-sm mb-1">Alur Pendaftaran yang Jelas</p>
+            <p class="text-sm text-gray-500 leading-relaxed">Informasi pendaftaran yang lengkap mencakup alur, syarat, jadwal, dan tahapan agar calon siswa dan orang tua lebih mudah memahami proses pendaftaran sekolah.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BENEFIT ── -->
+  <section id="benefit" class="benefit-section px-5 py-14">
+    <h2 class="text-white font-bold text-center text-base tracking-wide mb-8">Keuntungan</h2>
+    <div class="space-y-4">
+      <div class="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl p-5 flex gap-4 items-start">
+        <div class="benefit-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-white font-bold text-sm mb-1">Siap Kerja Setelah Lulus</p>
+          <p class="text-white/75 text-sm leading-relaxed">SMK Budi Bakti Ciwidey membantu siswa memiliki keterampilan dan pengalaman yang sesuai dengan kebutuhan dunia kerja sehingga siswa lebih siap menghadapi karier setelah lulus.</p>
+        </div>
+      </div>
+      <div class="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl p-5 flex gap-4 items-start">
+        <div class="benefit-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-white font-bold text-sm mb-1">Pengalaman Praktik Lebih Banyak</p>
+          <p class="text-white/75 text-sm leading-relaxed">Pembelajaran berbasis praktik membantu siswa memahami materi secara langsung dan meningkatkan kemampuan dalam bidang yang dipelajari.</p>
+        </div>
+      </div>
+      <div class="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl p-5 flex gap-4 items-start">
+        <div class="benefit-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m1.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-white font-bold text-sm mb-1">Mengembangkan Kreativitas dan Bakat</p>
+          <p class="text-white/75 text-sm leading-relaxed">Sekolah mendukung siswa untuk mengembangkan kreativitas, bakat, dan minat melalui berbagai kegiatan pembelajaran maupun ekstrakurikuler.</p>
+        </div>
+      </div>
+      <div class="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl p-5 flex gap-4 items-start">
+        <div class="benefit-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-white font-bold text-sm mb-1">Mendukung Pengembangan Potensi Siswa</p>
+          <p class="text-white/75 text-sm leading-relaxed">SMK Budi Bakti Ciwidey membantu siswa mengembangkan potensi, kemampuan, dan bakat yang dimiliki agar dapat berkembang secara maksimal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ── -->
+  <section id="alur" class="bg-gray-50 px-5 py-10">
+    <div class="bg-white rounded-2xl shadow-sm p-6">
+      <h3 class="font-bold text-center text-sm mb-7">Langkah-langkah</h3>
+      <div class="space-y-6">
+        <div class="flex gap-4">
+          <div class="step-badge">1</div>
+          <div>
+            <p class="font-bold text-sm mb-1">Membuat Akun Pendaftaran</p>
+            <p class="text-sm text-gray-500 leading-relaxed">Calon siswa membuat akun dan mengisi data diri pada sistem pendaftaran SMBP sekolah.</p>
+          </div>
+        </div>
+        <div class="border-t border-gray-100 pt-6 flex gap-4">
+          <div class="step-badge">2</div>
+          <div>
+            <p class="font-bold text-sm mb-1">Mengunggah Berkas Persyaratan</p>
+            <p class="text-sm text-gray-500 leading-relaxed">Mengupload dokumen seperti rapor, kartu keluarga, dan persyaratan lainnya sesuai ketentuan.</p>
+          </div>
+        </div>
+        <div class="border-t border-gray-100 pt-6 flex gap-4">
+          <div class="step-badge">3</div>
+          <div>
+            <p class="font-bold text-sm mb-1">Seleksi dan Verifikasi Data</p>
+            <p class="text-sm text-gray-500 leading-relaxed">Pihak sekolah melakukan pengecekan data serta proses seleksi calon siswa.</p>
+          </div>
+        </div>
+        <div class="border-t border-gray-100 pt-6 flex gap-4">
+          <div class="step-badge">4</div>
+          <div>
+            <p class="font-bold text-sm mb-1">Pengumuman dan Daftar Ulang</p>
+            <p class="text-sm text-gray-500 leading-relaxed">Calon siswa yang lolos seleksi melakukan daftar ulang sesuai jadwal yang telah ditentukan sekolah.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TESTIMONI ── -->
+  <section id="testimoni" class="testimoni-section px-5 py-14">
+    <h2 class="text-white font-bold text-center text-base tracking-wide mb-8">TESTIMONI</h2>
+    <div class="space-y-4">
+      <div class="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <img src="assets/bpk.jpeg" alt="Foto Tata Sudrajat" class="avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
+          <div class="avatar-fallback" style="display:none;">T</div>
+          <div>
+            <p class="text-white font-bold text-sm">Tata Sudrajat</p>
+            <p class="text-white/50 text-xs">Dinas Pendidikan Provinsi Jawa Barat</p>
+          </div>
+        </div>
+        <p class="text-white/75 text-sm leading-relaxed">Saya melihat proses pembelajaran yang berjalan dengan baik, tertib, serta penuh semangat. Sekolah ini memiliki komitmen dalam membentuk karakter siswa serta membekali keterampilan yang sesuai dengan kebutuhan dunia kerja.</p>
+      </div>
+      <div class="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <img src="assets/alumni1.jpeg" alt="Foto Iqbal Abdul" class="avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
+          <div class="avatar-fallback" style="display:none;">I</div>
+          <div>
+            <p class="text-white font-bold text-sm">Iqbal Abdul</p>
+            <p class="text-white/50 text-xs">Alumni RPL 2025 · Kini di Alfamart</p>
+          </div>
+        </div>
+        <p class="text-white/75 text-sm leading-relaxed">Saya mendapatkan banyak ilmu dan pengalaman dari pembelajaran maupun organisasi di sekolah. Meski bekerja di bidang ritel, sekolah telah melatih mental dan kesiapan kerja saya dengan sangat baik.</p>
+      </div>
+      <div class="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <img src="assets/ibu.jpg" alt="Foto Lisyeu Andriani" class="avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
+          <div class="avatar-fallback" style="display:none;">L</div>
+          <div>
+            <p class="text-white font-bold text-sm">Lisyeu Andriani</p>
+            <p class="text-white/50 text-xs">Alumni RPL Angkatan 2022 · SGS PRO</p>
+          </div>
+        </div>
+        <p class="text-white/75 text-sm leading-relaxed">Ilmu dari SMK BBC RPL ternyata sangat relevan dengan karier saya di digital marketing. Cara berpikir logis, kemampuan membaca data, dan pemahaman sistem yang saya pelajari sangat membantu saat mengelola iklan di SGS PRO — perusahaan Agent Properti tempat saya berkarier tepat setelah lulus.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="bg-white px-6 py-16 text-center">
+    <h2 class="font-extrabold text-2xl leading-tight mb-4 text-gray-900">
+      SIAP MENJADI BAGIAN<br>DARI KAMI?
+    </h2>
+    <p class="text-gray-500 text-sm leading-relaxed mb-10 max-w-xs mx-auto">
+      Daftarkan diri kamu sekarang dan mulai perjalanan menuju masa depan yang lebih cerah bersama SMK Budi Bakti Ciwidey.
+    </p>
+    <a href="#footer" class="bg-blue-900 text-white text-sm font-semibold tracking-widest rounded-full py-4 px-8 inline-block hover:bg-blue-800 transition">
+      DAFTAR SEKARANG
+    </a>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer id="footer" class="bg-blue-950 px-6 py-10 text-white">
+    <h3 class="font-bold text-base mb-2">SEKOLAH SMK BUDI BAKTI CIWIDEY</h3>
+    <div class="flex items-start gap-2 text-white/60 text-sm mb-7">
+      <span class="mt-0.5">🗺️</span>
+      <span>Jl. Babakan Tiga No.82, Ciwidey, Kec. Ciwidey, Kabupaten Bandung, Jawa Barat 40973</span>
+    </div>
+    <h4 class="font-bold text-sm mb-4">Hubungi Kami</h4>
+    <div class="space-y-3">
+      <div class="flex items-start gap-3">
+        <span class="text-white/60 mt-0.5">✉️</span>
+        <div>
+          <p class="text-white/40 text-xs">Email</p>
+          <p class="text-white/80 text-sm">budibakticiwidey.smk@gmail.com</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-3">
+        <span class="text-white/60 mt-0.5">📞</span>
+        <div>
+          <p class="text-white/40 text-xs">No. Telp</p>
+          <p class="text-white/80 text-sm">0225928262</p>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-white/10 mt-10 pt-5">
+      <p class="text-white/30 text-xs">&lt;/&gt; DESIGNED & DEVELOPED BY</p>
+      <p class="text-white/50 text-sm font-semibold">Amethyst Group</p>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Navbar side panel ── */
+    function openMenu() {
+      const isOpen = document.getElementById('mobileMenu').classList.contains('open');
+      if (isOpen) closeMenu();
+      else {
+        document.getElementById('mobileMenu').classList.add('open');
+        document.getElementById('menuOverlay').classList.add('open');
+      }
+    }
+    function closeMenu() {
+      document.getElementById('mobileMenu').classList.remove('open');
+      document.getElementById('menuOverlay').classList.remove('open');
+    }
+
+    /* ── SWIPE / DRAG logic for jurusan cards ── */
+    const SWIPE_THRESHOLD = 50; // px minimum swipe distance to trigger
+
+    function initSwipe(wrapId, dotPrefix) {
+      const wrapper = document.getElementById(wrapId);
+      const inner   = wrapper.querySelector('.jurusan-inner');
+      let startX = 0;
+      let currentX = 0;
+      let isDragging = false;
+      let isOpen = false;
+
+      function getOffset() {
+        return isOpen ? -50 : 0; // percent of inner width
+      }
+
+      function applyDrag(deltaX) {
+        // Convert deltaX (px) to percentage of inner width
+        const innerW = inner.offsetWidth; // 200% of wrapper
+        const deltaPct = (deltaX / innerW) * 100;
+        const base = getOffset();
+        let next = base + deltaPct;
+        // Clamp: front can't go right past 0, detail can't go left past -50
+        next = Math.max(-50, Math.min(0, next));
+        inner.style.transform = `translateX(${next}%)`;
+      }
+
+      function settle(deltaX) {
+        inner.classList.remove('no-transition');
+        if (!isOpen && deltaX < -SWIPE_THRESHOLD) {
+          // swipe left → open detail
+          isOpen = true;
+          wrapper.classList.add('open');
+          inner.style.transform = '';
+          updateDots(dotPrefix, 1);
+        } else if (isOpen && deltaX > SWIPE_THRESHOLD) {
+          // swipe right → back to front
+          isOpen = false;
+          wrapper.classList.remove('open');
+          inner.style.transform = '';
+          updateDots(dotPrefix, 0);
+        } else {
+          // snap back
+          inner.style.transform = isOpen ? 'translateX(-50%)' : '';
+        }
+      }
+
+      // ── Touch events ──
+      wrapper.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        isDragging = true;
+        inner.classList.add('no-transition');
+      }, { passive: true });
+
+      wrapper.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        currentX = e.touches[0].clientX;
+        applyDrag(currentX - startX);
+      }, { passive: true });
+
+      wrapper.addEventListener('touchend', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        settle(currentX - startX);
+      });
+
+      // ── Mouse drag events (desktop) ──
+      wrapper.addEventListener('mousedown', (e) => {
+        startX = e.clientX;
+        isDragging = true;
+        inner.classList.add('no-transition');
+        wrapper.classList.add('grabbing');
+        e.preventDefault();
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        currentX = e.clientX;
+        applyDrag(currentX - startX);
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        wrapper.classList.remove('grabbing');
+        settle(currentX - startX);
+      });
+    }
+
+    function updateDots(prefix, activeIndex) {
+      document.getElementById(`dot-${prefix}-0`).classList.toggle('active', activeIndex === 0);
+      document.getElementById(`dot-${prefix}-1`).classList.toggle('active', activeIndex === 1);
+    }
+
+    // Init all three cards
+    initSwipe('wrap-rpl',    'rpl');
+    initSwipe('wrap-bisnis', 'bisnis');
+    initSwipe('wrap-dkv',    'dkv');
+  </script>
+</body>
+</html>
