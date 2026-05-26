@@ -1,861 +1,851 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SMK Budi Bakti Ciwidey</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
   <style>
-    * { font-family: 'Poppins', sans-serif; }
-    h1, h2, h3, h4, h5, h6 { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+    :root {
+      --navy:  #0B1D3A;
+      --navy2: #122649;
+      --blue:  #1E56A0;
+      --blue2: #2d6fcf;
+      --gold:  #D4A017;
+      --gold2: #f0bc2e;
+      --red:   #C0392B;
+      --light: #F4F7FB;
+      --white: #FFFFFF;
+      --text:  #1a2540;
+      --muted: #6b7a99;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #fff; color: var(--text); overflow-x: hidden; }
 
-    .hero-section {
-      background: url('assets/halaman1.jpeg') center/cover no-repeat;
-      position: relative;
+    /* ── NAVBAR ── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 5%; height: 68px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(11,29,58,0.92); backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.07); transition: background 0.3s;
     }
-    .hero-section::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(15, 25, 60, 0.65);
-    }
-    .hero-section > * { position: relative; z-index: 1; }
+    .navbar.scrolled { background: rgba(11,29,58,0.98); box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .nav-logo img { width: 44px; height: 44px; object-fit: contain; }
+    .nav-logo-text { color: #fff; font-size: 13px; font-weight: 700; line-height: 1.3; }
+    .nav-logo-text span { display: block; font-weight: 400; font-size: 10px; opacity: 0.5; letter-spacing: 0.08em; text-transform: uppercase; }
+    .nav-links { display: none; gap: 32px; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 600; text-decoration: none; letter-spacing: 0.03em; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta { display: none; padding: 9px 22px; border-radius: 100px; background: var(--blue2); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; transition: background 0.2s, transform 0.2s; }
+    .nav-cta:hover { background: var(--blue); transform: translateY(-1px); }
+    .nav-ham { background: none; border: none; cursor: pointer; color: #fff; padding: 4px; display: flex; }
+    @media(min-width:900px) { .nav-links { display: flex; } .nav-cta { display: block; } .nav-ham { display: none; } }
 
-    .benefit-section {
-      background: url('assets/halaman2.jpg') center/cover no-repeat;
-      position: relative;
-    }
-    .benefit-section::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(20, 35, 75, 0.72);
-    }
-    .benefit-section > * { position: relative; z-index: 1; }
+    .m-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 98; }
+    .m-overlay.open { display: block; }
+    .m-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 280px; z-index: 99; background: var(--navy2); transform: translateX(100%); transition: transform 0.3s cubic-bezier(.4,0,.2,1); display: flex; flex-direction: column; padding: 80px 28px 40px; }
+    .m-drawer.open { transform: translateX(0); }
+    .m-drawer a { color: rgba(255,255,255,0.85); font-size: 18px; font-weight: 700; text-decoration: none; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.07); transition: color 0.2s; display: block; }
+    .m-drawer a:hover { color: var(--gold2); }
+    .m-drawer .m-cta { margin-top: 24px; padding: 14px; background: var(--blue2); border-radius: 12px; text-align: center; color: #fff; font-weight: 800; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; border-bottom: none; }
+    .m-close { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.6); }
 
-    .testimoni-section {
-      background: url('assets/atas.png') center top/cover no-repeat;
-      position: relative;
-    }
-    .testimoni-section::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(20, 35, 75, 0.72);
-    }
-    .testimoni-section > * { position: relative; z-index: 1; }
+    /* ── HERO ── */
+    .hero { position: relative; min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 100px 5% 60px; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; background: url('assets/halaman1.jpeg') center/cover no-repeat; }
+    .hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(8,18,45,0.85) 0%, rgba(15,40,90,0.75) 50%, rgba(10,22,55,0.88) 100%); }
+    .hero-content { position: relative; z-index: 2; max-width: 700px; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 100px; padding: 6px 16px; color: rgba(255,255,255,0.8); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 24px; animation: fadeUp 0.8s ease both; }
+    .hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold2); animation: pulse 2s ease infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+    .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(2.4rem, 7vw, 5rem); color: #fff; line-height: 1.1; margin-bottom: 20px; animation: fadeUp 0.9s 0.1s ease both; }
+    .hero h1 em { font-style: italic; color: var(--gold2); }
+    .hero p { color: rgba(255,255,255,0.65); font-size: clamp(14px,2vw,17px); line-height: 1.7; margin-bottom: 36px; animation: fadeUp 0.9s 0.2s ease both; }
+    .hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; animation: fadeUp 0.9s 0.3s ease both; }
+    .btn-primary { padding: 14px 32px; border-radius: 100px; background: var(--blue2); color: #fff; font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; transition: all 0.25s; box-shadow: 0 8px 30px rgba(45,111,207,0.45); }
+    .btn-primary:hover { background: var(--blue); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(45,111,207,0.55); }
+    .btn-outline { padding: 14px 32px; border-radius: 100px; border: 2px solid rgba(255,255,255,0.4); color: #fff; font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; transition: all 0.25s; }
+    .btn-outline:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.7); }
+    .hero-scroll { position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 6px; color: rgba(255,255,255,0.4); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; animation: fadeUp 1s 0.5s ease both; }
+    .hero-scroll svg { animation: scrollBounce 1.8s ease infinite; }
+    @keyframes scrollBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 
-    .program-blue {
-      background: url('assets/kunjin_br.jpeg') center/cover no-repeat;
-      position: relative;
-    }
-    .program-blue::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(30, 90, 200, 0.78);
-    }
-    .program-yellow {
-      background: url('assets/kunjin_rpl.jpeg') center/cover no-repeat;
-      position: relative;
-    }
-    .program-yellow::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(210, 160, 20, 0.82);
-    }
-    .program-red {
-      background: url('assets/kunjin_dkv.jpeg') center/cover no-repeat;
-      position: relative;
-    }
-    .program-red::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(190, 30, 30, 0.80);
-    }
-    .program-blue > *, .program-yellow > *, .program-red > * {
-      position: relative;
-      z-index: 1;
-    }
+    /* ── STATS ── */
+    .stats-bar { background: var(--navy); padding: 28px 5%; display: grid; grid-template-columns: repeat(3,1fr); }
+    .stat-item { text-align: center; padding: 16px 8px; }
+    .stat-item + .stat-item { border-left: 1px solid rgba(255,255,255,0.1); }
+    .stat-num { font-family: 'DM Serif Display', serif; font-size: clamp(1.8rem,5vw,2.8rem); color: var(--gold2); display: block; line-height: 1; }
+    .stat-label { color: rgba(255,255,255,0.5); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; margin-top: 4px; display: block; }
 
-    .navbar { background: #0f1940; }
-    html { scroll-behavior: smooth; }
+    /* ── SECTION HEADER ── */
+    .section-header { text-align: center; padding: 70px 5% 40px; }
+    .section-tag { display: inline-block; color: var(--blue2); font-size: 11px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 12px; }
+    .section-title { font-family: 'DM Serif Display', serif; font-size: clamp(1.8rem,4.5vw,3rem); color: var(--text); line-height: 1.2; }
+    .section-sub { color: var(--muted); font-size: 15px; line-height: 1.7; margin-top: 10px; max-width: 520px; margin-inline: auto; }
 
-    .step-badge {
-      background: #2d6fa8;
-      border-radius: 8px;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 700;
-      font-size: 16px;
-      flex-shrink: 0;
-    }
+    /* ══════════════════════════════════════
+       JURUSAN CARDS — FLIP MECHANIC
+       Desktop: 3-col grid, click to flip
+       Mobile:  horizontal scroll + tap to flip
+    ══════════════════════════════════════ */
+    #program { background: var(--light); }
 
-    /* ── JURUSAN SWIPE PANEL ── */
-    .jurusan-wrapper {
-      position: relative;
-      overflow: hidden;
-      cursor: grab;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-    .jurusan-wrapper.grabbing {
-      cursor: grabbing;
-    }
-    .jurusan-inner {
-      display: flex;
-      width: 200%;
-      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .jurusan-inner.no-transition {
-      transition: none;
-    }
-    .jurusan-wrapper.open .jurusan-inner {
-      transform: translateX(-50%);
-    }
-    .jurusan-front,
-    .jurusan-detail {
-      width: 50%;
-      flex-shrink: 0;
-      position: relative;
-    }
+    /* --- DESKTOP grid --- */
+    .jurusan-grid { display: none; padding: 0 5% 70px; gap: 24px; }
+    @media(min-width:900px) { .jurusan-grid { display: grid; grid-template-columns: repeat(3,1fr); } }
 
-    .detail-blue   { background: #1a4faa; }
-    .detail-yellow { background: #b8820e; }
-    .detail-red    { background: #a81a1a; }
+    /* flip container */
+    .flip-card { perspective: 1200px; height: 480px; cursor: pointer; }
+    .flip-card-inner {
+      position: relative; width: 100%; height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 20px;
+    }
+    .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
 
-    /* Swipe hint indicator */
-    .swipe-hint {
-      position: absolute;
-      bottom: 14px;
-      right: 16px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      z-index: 3;
-      pointer-events: none;
-      animation: hintPulse 2s ease-in-out infinite;
+    /* front & back shared */
+    .flip-front, .flip-back {
+      position: absolute; inset: 0; border-radius: 20px; overflow: hidden;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
     }
-    .swipe-hint span {
-      color: rgba(255,255,255,0.7);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-    .swipe-hint svg {
-      width: 18px;
-      height: 18px;
-      color: rgba(255,255,255,0.7);
-      animation: swipeArrow 1.6s ease-in-out infinite;
-    }
-    @keyframes swipeArrow {
-      0%, 100% { transform: translateX(0); opacity: 0.5; }
-      50%       { transform: translateX(5px); opacity: 1; }
-    }
-    @keyframes hintPulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.6; }
-    }
-    /* Hide hint when open */
-    .jurusan-wrapper.open .swipe-hint { display: none; }
+    .flip-back { transform: rotateY(180deg); }
 
-    /* Back hint in detail panel */
-    .back-hint {
-      position: absolute;
-      bottom: 14px;
-      left: 16px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      z-index: 3;
-      pointer-events: none;
-      animation: hintPulse 2s ease-in-out infinite;
-    }
-    .back-hint span {
-      color: rgba(255,255,255,0.7);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-    .back-hint svg {
-      width: 18px;
-      height: 18px;
-      color: rgba(255,255,255,0.7);
-      animation: backArrow 1.6s ease-in-out infinite;
-    }
-    @keyframes backArrow {
-      0%, 100% { transform: translateX(0); opacity: 0.5; }
-      50%       { transform: translateX(-5px); opacity: 1; }
-    }
-    /* Show back hint only when open */
-    .back-hint { display: none; }
-    .jurusan-wrapper.open .back-hint { display: flex; }
+    /* front */
+    .flip-front-img { width: 100%; height: 55%; object-fit: cover; display: block; transition: transform 0.4s; }
+    .flip-front-overlay { position: absolute; top: 0; left: 0; right: 0; height: 55%; }
+    .ov-gold { background: linear-gradient(180deg, rgba(120,90,0,0.4) 0%, rgba(160,110,0,0.88) 100%); }
+    .ov-blue { background: linear-gradient(180deg, rgba(15,50,130,0.4) 0%, rgba(20,60,150,0.88) 100%); }
+    .ov-red  { background: linear-gradient(180deg, rgba(120,20,10,0.4) 0%, rgba(160,25,20,0.88) 100%); }
+    .flip-front-label { position: absolute; top: 0; left: 0; right: 0; height: 55%; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; }
+    .flip-front-label h3 { color: #fff; font-size: 19px; font-weight: 800; line-height: 1.25; }
+    .flip-front-body { background: #fff; padding: 22px; height: 45%; display: flex; flex-direction: column; justify-content: space-between; }
+    .jurusan-badge { display: inline-block; padding: 4px 12px; border-radius: 100px; font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+    .badge-gold { background: rgba(212,160,23,0.12); color: #9a6f00; }
+    .badge-blue { background: rgba(30,86,160,0.1); color: var(--blue); }
+    .badge-red  { background: rgba(192,57,43,0.1); color: var(--red); }
+    .flip-front-body p { font-size: 13px; color: var(--muted); line-height: 1.6; flex: 1; }
+    .flip-hint { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 11px; font-weight: 600; margin-top: 10px; opacity: 0.7; }
+    .flip-hint svg { width: 14px; height: 14px; }
 
-    /* Dot indicators */
-    .dot-indicators {
-      position: absolute;
-      bottom: 14px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 6px;
-      z-index: 3;
-      pointer-events: none;
-    }
-    .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.4);
-      transition: background 0.3s, transform 0.3s;
-    }
-    .dot.active {
-      background: rgba(255,255,255,0.95);
-      transform: scale(1.3);
-    }
+    /* back */
+    .flip-back { padding: 26px; display: flex; flex-direction: column; color: #fff; }
+    .back-gold { background: linear-gradient(150deg, #a07210 0%, #7a5500 100%); }
+    .back-blue { background: linear-gradient(150deg, #1e56a0 0%, #0f2d60 100%); }
+    .back-red  { background: linear-gradient(150deg, #c0392b 0%, #7a1510 100%); }
+    .flip-back h4 { font-size: 16px; font-weight: 800; margin-bottom: 4px; line-height: 1.3; }
+    .flip-back .back-sub { color: rgba(255,255,255,0.6); font-size: 12px; margin-bottom: 18px; }
+    .back-section-title { font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
+    .back-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+    .back-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; color: rgba(255,255,255,0.85); line-height: 1.45; list-style: none; }
+    .back-list li::before { content: '✓'; flex-shrink: 0; font-size: 11px; opacity: 0.7; margin-top: 1px; }
+    .back-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .back-pill { padding: 4px 10px; border-radius: 100px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); font-size: 11px; font-weight: 600; }
+    .back-divider { border: none; border-top: 1px solid rgba(255,255,255,0.15); margin: 12px 0; }
+    .back-return { display: flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.55); font-size: 11px; font-weight: 600; margin-top: auto; cursor: pointer; }
+    .back-return svg { width: 14px; height: 14px; }
 
-    /* Avatar */
-    .avatar-img {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.6);
-      flex-shrink: 0;
-      object-fit: cover;
-      background: rgba(255,255,255,0.15);
-    }
-    .avatar-fallback {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.6);
-      flex-shrink: 0;
-      background: rgba(255,255,255,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 700;
-      font-size: 18px;
-    }
+    /* --- MOBILE swipe --- */
+    .jurusan-mobile { display: block; padding-bottom: 30px; }
+    @media(min-width:900px) { .jurusan-mobile { display: none; } }
+    .swipe-hint-bar { text-align: center; padding: 0 0 12px; color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .jurusan-scroller { overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 5%; display: flex; gap: 16px; padding: 0 5% 16px; scrollbar-width: none; }
+    .jurusan-scroller::-webkit-scrollbar { display: none; }
+    .jurusan-snap { scroll-snap-align: start; min-width: calc(85vw); max-width: 360px; }
 
-    /* Mobile nav */
-    #mobileMenu {
-      transform: translateX(100%);
-      transition: transform 0.3s ease-in-out;
-    }
-    #mobileMenu.open { transform: translateX(0); }
-    #menuOverlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      z-index: 39;
-    }
-    #menuOverlay.open { display: block; }
+    /* mobile flip card */
+    .flip-card-m { perspective: 1200px; height: 460px; cursor: pointer; }
+    .flip-card-m-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.55s cubic-bezier(0.4,0,0.2,1); border-radius: 20px; }
+    .flip-card-m.flipped .flip-card-m-inner { transform: rotateY(180deg); }
+    .flip-front-m, .flip-back-m { position: absolute; inset: 0; border-radius: 20px; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .flip-back-m { transform: rotateY(180deg); padding: 24px; display: flex; flex-direction: column; color: #fff; }
+    .flip-front-m-img { width: 100%; height: 52%; object-fit: cover; display: block; }
+    .flip-front-m-overlay { position: absolute; top: 0; left: 0; right: 0; height: 52%; }
+    .flip-front-m-label { position: absolute; top: 0; left: 0; right: 0; height: 52%; display: flex; flex-direction: column; justify-content: flex-end; padding: 18px; }
+    .flip-front-m-label h3 { color: #fff; font-size: 17px; font-weight: 800; line-height: 1.25; }
+    .flip-front-m-body { background: #fff; padding: 18px; height: 48%; display: flex; flex-direction: column; justify-content: space-between; }
+    .flip-front-m-body p { font-size: 13px; color: var(--muted); line-height: 1.55; flex: 1; }
+    .swipe-dots { display: flex; justify-content: center; gap: 6px; padding-top: 4px; }
+    .swipe-dot { width: 6px; height: 6px; border-radius: 50%; background: #d0d5e8; transition: background 0.3s, transform 0.3s; }
+    .swipe-dot.active { background: var(--blue2); transform: scale(1.4); }
 
-    .benefit-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.22);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .benefit-icon svg {
-      width: 26px;
-      height: 26px;
-      color: white;
-    }
+    /* ── MASALAH & SOLUSI ── */
+    #masalah { background: #fff; padding: 0 5% 70px; }
+    .ms-grid { display: grid; gap: 24px; }
+    @media(min-width:800px) { .ms-grid { grid-template-columns: 1fr 1fr; } }
+    .ms-card { border-radius: 20px; padding: 30px; border: 1.5px solid #e8edf7; }
+    .ms-card.problem { background: #fff9f9; border-color: rgba(192,57,43,0.15); }
+    .ms-card.solution { background: #f6f9ff; border-color: rgba(30,86,160,0.15); }
+    .ms-card h3 { font-size: 14px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 18px; }
+    .ms-card.problem h3 { color: var(--red); }
+    .ms-card.solution h3 { color: var(--blue); }
+    .problem-list { display: flex; flex-direction: column; gap: 12px; }
+    .problem-item { display: flex; gap: 12px; align-items: flex-start; }
+    .problem-icon { width: 28px; height: 28px; border-radius: 8px; background: rgba(192,57,43,0.1); color: var(--red); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 13px; }
+    .problem-item p { font-size: 13.5px; color: var(--muted); line-height: 1.6; padding-top: 4px; }
+    .solution-list { display: flex; flex-direction: column; gap: 14px; }
+    .solution-item { display: flex; gap: 14px; align-items: flex-start; }
+    .solution-num { width: 32px; height: 32px; border-radius: 10px; flex-shrink: 0; background: var(--blue2); color: #fff; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+    .solution-item-text strong { font-size: 13.5px; font-weight: 700; display: block; margin-bottom: 3px; }
+    .solution-item-text p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── BENEFIT ── */
+    #benefit { position: relative; padding: 80px 5%; background: url('assets/halaman2.jpg') center/cover no-repeat; }
+    #benefit::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(8,20,55,0.92) 0%, rgba(20,50,120,0.85) 100%); }
+    .benefit-inner { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
+    .benefit-grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+    @media(min-width:640px) { .benefit-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(min-width:1000px) { .benefit-grid { grid-template-columns: repeat(4,1fr); } }
+    .benefit-item { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 26px; transition: background 0.3s, transform 0.3s; }
+    .benefit-item:hover { background: rgba(255,255,255,0.12); transform: translateY(-4px); }
+    .benefit-icon-wrap { width: 52px; height: 52px; border-radius: 14px; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+    .benefit-icon-wrap svg { width: 26px; height: 26px; color: var(--gold2); }
+    .benefit-item h4 { color: #fff; font-size: 15px; font-weight: 700; margin-bottom: 8px; line-height: 1.3; }
+    .benefit-item p { color: rgba(255,255,255,0.6); font-size: 13px; line-height: 1.65; }
+
+    /* ── ALUR / STEPS ── */
+    #alur { background: var(--light); padding: 0 5% 70px; }
+    .steps-grid { display: grid; gap: 20px; }
+    @media(min-width:700px) { .steps-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(min-width:1000px) { .steps-grid { grid-template-columns: repeat(4,1fr); } }
+    .step-card { background: #fff; border-radius: 20px; padding: 28px 24px; border: 1.5px solid #e8edf7; position: relative; overflow: hidden; transition: box-shadow 0.3s, transform 0.3s; }
+    .step-card:hover { box-shadow: 0 12px 40px rgba(30,86,160,0.12); transform: translateY(-4px); }
+    .step-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--blue2), var(--blue)); }
+    .step-number { font-family: 'DM Serif Display', serif; font-size: 3.5rem; color: rgba(30,86,160,0.08); position: absolute; top: 10px; right: 16px; line-height: 1; font-weight: 700; }
+    .step-badge-n { width: 38px; height: 38px; border-radius: 11px; background: linear-gradient(135deg, var(--blue2), var(--blue)); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 16px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(45,111,207,0.3); }
+    .step-card h4 { font-size: 14.5px; font-weight: 800; margin-bottom: 8px; color: var(--text); }
+    .step-card p { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+    /* ── TESTIMONI ── */
+    #testimoni { position: relative; padding: 80px 5%; background: url('assets/atas.png') center top/cover no-repeat; }
+    #testimoni::before { content: ''; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(8,18,50,0.93) 0%, rgba(18,50,110,0.88) 100%); }
+    .testi-inner { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
+    .testi-grid { display: grid; gap: 18px; }
+    @media(min-width:700px) { .testi-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(min-width:1000px) { .testi-grid { grid-template-columns: repeat(3,1fr); } }
+    .testi-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 26px; transition: background 0.3s; }
+    .testi-card:hover { background: rgba(255,255,255,0.11); }
+    .testi-stars { color: var(--gold2); font-size: 13px; margin-bottom: 14px; letter-spacing: 2px; }
+    .testi-quote { color: rgba(255,255,255,0.78); font-size: 13.5px; line-height: 1.75; margin-bottom: 20px; }
+    .testi-author { display: flex; align-items: center; gap: 12px; }
+    .testi-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.15); flex-shrink: 0; }
+    .testi-fallback { width: 44px; height: 44px; border-radius: 50%; background: var(--blue2); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 17px; flex-shrink: 0; }
+    .testi-name { color: #fff; font-size: 13.5px; font-weight: 700; }
+    .testi-role { color: rgba(255,255,255,0.45); font-size: 11.5px; margin-top: 2px; }
+
+    /* ── CTA ── */
+    .cta-section { background: #fff; padding: 80px 5%; text-align: center; }
+    .cta-inner { max-width: 560px; margin: 0 auto; }
+    .cta-section h2 { font-family: 'DM Serif Display', serif; font-size: clamp(1.8rem,4vw,2.8rem); color: var(--text); line-height: 1.2; margin-bottom: 16px; }
+    .cta-section p { color: var(--muted); font-size: 15px; line-height: 1.7; margin-bottom: 32px; }
+    .btn-cta { padding: 15px 36px; border-radius: 100px; font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; transition: all 0.25s; }
+    .btn-cta-primary { background: var(--blue2); color: #fff; box-shadow: 0 8px 28px rgba(45,111,207,0.35); display: inline-block; }
+    .btn-cta-primary:hover { background: var(--blue); transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    footer { background: var(--navy); padding: 50px 5% 30px; color: rgba(255,255,255,0.7); }
+    .footer-grid { display: grid; gap: 36px; margin-bottom: 40px; }
+    @media(min-width:700px) { .footer-grid { grid-template-columns: 1.5fr 1fr 1fr; } }
+    .footer-logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .footer-logo-row img { width: 44px; height: 44px; object-fit: contain; }
+    .footer-school-name { color: #fff; font-size: 14px; font-weight: 800; }
+    .footer-brand p { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.5); max-width: 260px; }
+    .footer-address { display: flex; gap: 10px; margin-top: 16px; font-size: 13px; color: rgba(255,255,255,0.45); }
+    .footer-col h4 { color: #fff; font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 16px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { color: rgba(255,255,255,0.5); font-size: 13px; text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-contact { display: flex; flex-direction: column; gap: 12px; }
+    .contact-row { display: flex; gap: 10px; align-items: flex-start; }
+    .contact-label { color: rgba(255,255,255,0.35); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .contact-val { color: rgba(255,255,255,0.7); font-size: 13px; margin-top: 2px; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.07); padding-top: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.3); }
+    .footer-dev { font-size: 12px; color: rgba(255,255,255,0.3); }
+    .footer-dev span { color: rgba(255,255,255,0.55); font-weight: 700; }
+
+    /* Scroll reveal */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-d1 { transition-delay: 0.1s; }
+    .reveal-d2 { transition-delay: 0.2s; }
+    .reveal-d3 { transition-delay: 0.3s; }
+    .reveal-d4 { transition-delay: 0.4s; }
   </style>
 </head>
-<body class="bg-white text-gray-800 overflow-x-hidden">
+<body>
 
-  <!-- ── NAVBAR ── -->
-  <nav class="navbar fixed top-0 left-0 right-0 z-50 px-4 py-3 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <img
-        id="schoolLogo"
-        src="assets/logobbc.png"
-        alt="Logo SMK Budi Bakti Ciwidey"
-        class="w-12 h-12 object-contain flex-shrink-0"
-        onerror="this.style.display='none'"
-      />
-      <span class="text-white font-semibold text-sm">SMK Budi Bakti Ciwidey</span>
+<!-- ══ NAVBAR ══ -->
+<nav class="navbar" id="mainNav">
+  <a href="#" class="nav-logo">
+    <img src="assets/logobbc.png" alt="Logo" onerror="this.style.display='none'"/>
+    <div class="nav-logo-text">SMK Budi Bakti Ciwidey<span>Ciwidey · Bandung</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#program">Jurusan</a></li>
+    <li><a href="#masalah">Keunggulan</a></li>
+    <li><a href="#benefit">Keuntungan</a></li>
+    <li><a href="#alur">Pendaftaran</a></li>
+    <li><a href="#testimoni">Testimoni</a></li>
+  </ul>
+  <a href="#footer" class="nav-cta">Daftar Sekarang</a>
+  <button class="nav-ham" onclick="openMenu()" aria-label="Menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+</nav>
+
+<div class="m-overlay" id="mOverlay" onclick="closeMenu()"></div>
+<div class="m-drawer" id="mDrawer">
+  <button class="m-close" onclick="closeMenu()">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+  <a href="#program" onclick="closeMenu()">Jurusan</a>
+  <a href="#masalah" onclick="closeMenu()">Keunggulan</a>
+  <a href="#benefit" onclick="closeMenu()">Benefit</a>
+  <a href="#alur" onclick="closeMenu()">Pendaftaran</a>
+  <a href="#testimoni" onclick="closeMenu()">Testimoni</a>
+  <a href="#footer" onclick="closeMenu()" class="m-cta">Daftar Sekarang →</a>
+</div>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Penerimaan Peserta Didik Baru</div>
+    <h1>SMK Budi Bakti<br><em>Ciwidey</em></h1>
+    <p>Cerdas Teknologi · Kuat Karakter · Siap Dunia Kerja<br>Membentuk generasi unggul yang kompeten dan berkarakter.</p>
+    <div class="hero-btns">
+      <a href="#footer" class="btn-primary">Daftar Sekarang</a>
+      <a href="#program" class="btn-outline">Lihat Jurusan</a>
     </div>
-    <button id="menuBtn" class="text-white leading-none focus:outline-none w-8 h-8 flex items-center justify-center" onclick="openMenu()" aria-label="Toggle menu">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-      </svg>
-    </button>
-  </nav>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
 
-  <div id="menuOverlay" onclick="closeMenu()"></div>
+<!-- ══ STATS ══ -->
+<div class="stats-bar">
+  <div class="stat-item reveal"><span class="stat-num">3+</span><span class="stat-label">Jurusan Unggulan</span></div>
+  <div class="stat-item reveal reveal-d1"><span class="stat-num">15+</span><span class="stat-label">Tahun Berdiri</span></div>
+  <div class="stat-item reveal reveal-d2"><span class="stat-num">100%</span><span class="stat-label">Siap Kerja</span></div>
+</div>
 
-  <!-- ── MOBILE MENU ── -->
-  <div id="mobileMenu" class="fixed top-0 right-0 z-40 w-72 h-full bg-[#1A3D63] shadow-2xl flex flex-col pt-24 px-6">
-    <button onclick="closeMenu()" class="absolute top-5 right-5 text-white/70 hover:text-white transition">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-      </svg>
-    </button>
-    <div class="flex flex-col gap-6">
-      <a href="#program"   onclick="closeMenu()" class="text-white text-xl font-semibold hover:text-[#4A7FA7] transition">Jurusan</a>
-      <a href="#masalah"   onclick="closeMenu()" class="text-white text-xl font-semibold hover:text-[#4A7FA7] transition">Masalah</a>
-      <a href="#benefit"   onclick="closeMenu()" class="text-white text-xl font-semibold hover:text-[#4A7FA7] transition">Keuntungan</a>
-      <a href="#alur"      onclick="closeMenu()" class="text-white text-xl font-semibold hover:text-[#4A7FA7] transition">Langkah-langkah</a>
-      <a href="#testimoni" onclick="closeMenu()" class="text-white text-xl font-semibold hover:text-[#4A7FA7] transition">Testimoni</a>
-      <a href="#footer"    onclick="closeMenu()" class="mt-4 bg-[#4A7FA7] text-white py-3 rounded-full font-bold text-center hover:bg-[#B3CFE5] hover:text-[#0A1931] transition">
-        Daftar Sekarang
-      </a>
+<!-- ══ PROGRAM KEAHLIAN ══ -->
+<section id="program">
+  <div class="section-header reveal">
+    <div class="section-tag">Program Keahlian</div>
+    <h2 class="section-title">Pilih Jurusan<br>Sesuai Passionmu</h2>
+    <p class="section-sub">Klik kartu untuk melihat detail kompetensi dan peluang karir masing-masing jurusan.</p>
+  </div>
+
+  <!-- ─ DESKTOP 3-col flip grid ─ -->
+  <div class="jurusan-grid">
+
+    <!-- RPL -->
+    <div class="flip-card reveal reveal-d1" onclick="toggleFlip(this)">
+      <div class="flip-card-inner">
+        <div class="flip-front">
+          <img src="assets/kunjin_rpl.jpeg" alt="RPL" class="flip-front-img" onerror="this.src='data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;400&quot; height=&quot;270&quot;><rect fill=&quot;%23b8820e&quot; width=&quot;400&quot; height=&quot;270&quot;/></svg>'"/>
+          <div class="flip-front-overlay ov-gold"></div>
+          <div class="flip-front-label">
+            <span style="display:inline-block;background:rgba(255,255,255,0.2);color:#fff;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:100px;margin-bottom:8px;width:fit-content;">Teknologi</span>
+            <h3>Rekayasa Perangkat Lunak</h3>
+          </div>
+          <div class="flip-front-body">
+            <div>
+              <span class="jurusan-badge badge-gold">RPL</span>
+              <p>Programmer dan developer kreatif yang siap bersaing di dunia teknologi digital modern.</p>
+            </div>
+            <div class="flip-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+              Klik untuk detail
+            </div>
+          </div>
+        </div>
+        <div class="flip-back back-gold">
+          <h4>Rekayasa Perangkat Lunak</h4>
+          <p class="back-sub">Mencetak programmer & developer siap industri</p>
+          <p class="back-section-title">Kompetensi Utama</p>
+          <ul class="back-list">
+            <li>Pemrograman Website &amp; Aplikasi</li>
+            <li>Pembuatan UI/UX Design</li>
+            <li>Database &amp; Sistem Informasi</li>
+            <li>Praktik Project Berbasis Industri</li>
+            <li>Sertifikasi Kompetensi IT</li>
+          </ul>
+          <hr class="back-divider"/>
+          <p class="back-section-title">Peluang Karir</p>
+          <div class="back-pills">
+            <span class="back-pill">Web Developer</span>
+            <span class="back-pill">Mobile Dev</span>
+            <span class="back-pill">UI/UX Designer</span>
+            <span class="back-pill">Software Engineer</span>
+            <span class="back-pill">IT Support</span>
+            <span class="back-pill">Freelancer</span>
+          </div>
+          <div class="back-return">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            Klik untuk kembali
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bisnis Retail -->
+    <div class="flip-card reveal reveal-d2" onclick="toggleFlip(this)">
+      <div class="flip-card-inner">
+        <div class="flip-front">
+          <img src="assets/kunjin_br.jpeg" alt="Bisnis Retail" class="flip-front-img" onerror="this.src='data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;400&quot; height=&quot;270&quot;><rect fill=&quot;%231e5ac8&quot; width=&quot;400&quot; height=&quot;270&quot;/></svg>'"/>
+          <div class="flip-front-overlay ov-blue"></div>
+          <div class="flip-front-label">
+            <span style="display:inline-block;background:rgba(255,255,255,0.2);color:#fff;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:100px;margin-bottom:8px;width:fit-content;">Bisnis</span>
+            <h3>Bisnis Retail Pemasaran</h3>
+          </div>
+          <div class="flip-front-body">
+            <div>
+              <span class="jurusan-badge badge-blue">BRP</span>
+              <p>Tenaga bisnis retail profesional, komunikatif, dan siap kerja di dunia usaha dan industri.</p>
+            </div>
+            <div class="flip-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+              Klik untuk detail
+            </div>
+          </div>
+        </div>
+        <div class="flip-back back-blue">
+          <h4>Bisnis Retail Pemasaran</h4>
+          <p class="back-sub">Mencetak tenaga retail profesional siap industri</p>
+          <p class="back-section-title">Kompetensi Utama</p>
+          <ul class="back-list">
+            <li>Manajemen Toko Retail</li>
+            <li>Pelayanan Konsumen Profesional</li>
+            <li>Administrasi &amp; Kasir Digital</li>
+            <li>Strategi Pemasaran Produk</li>
+            <li>Praktik Kewirausahaan Retail</li>
+          </ul>
+          <hr class="back-divider"/>
+          <p class="back-section-title">Peluang Karir</p>
+          <div class="back-pills">
+            <span class="back-pill">Kasir Modern</span>
+            <span class="back-pill">Staff Minimarket</span>
+            <span class="back-pill">Sales Promotion</span>
+            <span class="back-pill">Admin Penjualan</span>
+            <span class="back-pill">Supervisor Retail</span>
+            <span class="back-pill">Wirausaha</span>
+          </div>
+          <div class="back-return">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            Klik untuk kembali
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DKV -->
+    <div class="flip-card reveal reveal-d3" onclick="toggleFlip(this)">
+      <div class="flip-card-inner">
+        <div class="flip-front">
+          <img src="assets/kunjin_dkv.jpeg" alt="DKV" class="flip-front-img" onerror="this.src='data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;400&quot; height=&quot;270&quot;><rect fill=&quot;%23c0392b&quot; width=&quot;400&quot; height=&quot;270&quot;/></svg>'"/>
+          <div class="flip-front-overlay ov-red"></div>
+          <div class="flip-front-label">
+            <span style="display:inline-block;background:rgba(255,255,255,0.2);color:#fff;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:100px;margin-bottom:8px;width:fit-content;">Kreatif</span>
+            <h3>Desain Komunikasi Visual</h3>
+          </div>
+          <div class="flip-front-body">
+            <div>
+              <span class="jurusan-badge badge-red">DKV</span>
+              <p>Desainer kreatif yang menghasilkan karya visual menarik dan komunikatif sesuai industri modern.</p>
+            </div>
+            <div class="flip-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+              Klik untuk detail
+            </div>
+          </div>
+        </div>
+        <div class="flip-back back-red">
+          <h4>Desain Komunikasi Visual</h4>
+          <p class="back-sub">Mencetak desainer kreatif siap industri kreatif</p>
+          <p class="back-section-title">Kompetensi Utama</p>
+          <ul class="back-list">
+            <li>Desain Grafis Digital</li>
+            <li>Editing Foto &amp; Video</li>
+            <li>Branding &amp; Konten Kreatif</li>
+            <li>Fotografi dan Videografi</li>
+            <li>Praktik Industri Kreatif</li>
+          </ul>
+          <hr class="back-divider"/>
+          <p class="back-section-title">Peluang Karir</p>
+          <div class="back-pills">
+            <span class="back-pill">Graphic Designer</span>
+            <span class="back-pill">Content Creator</span>
+            <span class="back-pill">Video Editor</span>
+            <span class="back-pill">Illustrator</span>
+            <span class="back-pill">Fotografer</span>
+            <span class="back-pill">Creative Designer</span>
+          </div>
+          <div class="back-return">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            Klik untuk kembali
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /jurusan-grid -->
+
+  <!-- ─ MOBILE horizontal scroll + tap to flip ─ -->
+  <div class="jurusan-mobile">
+    <div class="swipe-hint-bar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      Geser &amp; ketuk kartu untuk detail
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+    <div class="jurusan-scroller" id="jurusanScroller">
+
+      <!-- RPL mobile -->
+      <div class="jurusan-snap">
+        <div class="flip-card-m" onclick="toggleFlipM(this)">
+          <div class="flip-card-m-inner">
+            <div class="flip-front-m">
+              <img src="assets/kunjin_rpl.jpeg" alt="RPL" class="flip-front-m-img" onerror="this.src='data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;400&quot; height=&quot;240&quot;><rect fill=&quot;%23b8820e&quot; width=&quot;400&quot; height=&quot;240&quot;/></svg>'"/>
+              <div class="flip-front-m-overlay ov-gold"></div>
+              <div class="flip-front-m-label"><h3>Rekayasa Perangkat Lunak</h3></div>
+              <div class="flip-front-m-body">
+                <div><span class="jurusan-badge badge-gold">RPL</span><p>Programmer dan developer kreatif siap bersaing di dunia teknologi.</p></div>
+                <div class="flip-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:13px;height:13px"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Ketuk untuk detail</div>
+              </div>
+            </div>
+            <div class="flip-back-m back-gold">
+              <h4>Rekayasa Perangkat Lunak</h4>
+              <p class="back-sub" style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:14px;">Teknologi · Digital · Inovatif</p>
+              <p class="back-section-title">Kompetensi</p>
+              <ul class="back-list">
+                <li>Pemrograman Website &amp; Aplikasi</li>
+                <li>UI/UX Design &amp; Database</li>
+                <li>Sertifikasi Kompetensi IT</li>
+                <li>Praktik Project Industri</li>
+              </ul>
+              <hr class="back-divider"/>
+              <p class="back-section-title">Karir</p>
+              <div class="back-pills">
+                <span class="back-pill">Web Dev</span><span class="back-pill">UI/UX</span><span class="back-pill">Software Eng</span><span class="back-pill">Freelancer</span>
+              </div>
+              <div class="back-return" style="margin-top:auto;padding-top:12px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:13px;height:13px"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Ketuk kembali</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bisnis mobile -->
+      <div class="jurusan-snap">
+        <div class="flip-card-m" onclick="toggleFlipM(this)">
+          <div class="flip-card-m-inner">
+            <div class="flip-front-m">
+              <img src="assets/kunjin_br.jpeg" alt="Bisnis Retail" class="flip-front-m-img" onerror="this.src='data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;400&quot; height=&quot;240&quot;><rect fill=&quot;%231e5ac8&quot; width=&quot;400&quot; height=&quot;240&quot;/></svg>'"/>
+              <div class="flip-front-m-overlay ov-blue"></div>
+              <div class="flip-front-m-label"><h3>Bisnis Retail Pemasaran</h3></div>
+              <div class="flip-front-m-body">
+                <div><span class="jurusan-badge badge-blue">BRP</span><p>Tenaga bisnis retail profesional siap kerja di dunia usaha dan industri.</p></div>
+                <div class="flip-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:13px;height:13px"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Ketuk untuk detail</div>
+              </div>
+            </div>
+            <div class="flip-back-m back-blue">
+              <h4>Bisnis Retail Pemasaran</h4>
+              <p class="back-sub" style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:14px;">Bisnis · Pemasaran · Kewirausahaan</p>
+              <p class="back-section-title">Kompetensi</p>
+              <ul class="back-list">
+                <li>Manajemen Toko Retail</li>
+                <li>Pelayanan Konsumen Profesional</li>
+                <li>Administrasi &amp; Kasir Digital</li>
+                <li>Strategi Pemasaran Produk</li>
+              </ul>
+              <hr class="back-divider"/>
+              <p class="back-section-title">Karir</p>
+              <div class="back-pills">
+                <span class="back-pill">Kasir Modern</span><span class="back-pill">Sales</span><span class="back-pill">Supervisor</span><span class="back-pill">Wirausaha</span>
+              </div>
+              <div class="back-return" style="margin-top:auto;padding-top:12px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:13px;height:13px"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Ketuk kembali</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DKV mobile -->
+      <div class="jurusan-snap">
+        <div class="flip-card-m" onclick="toggleFlipM(this)">
+          <div class="flip-card-m-inner">
+            <div class="flip-front-m">
+              <img src="assets/kunjin_dkv.jpeg" alt="DKV" class="flip-front-m-img" onerror="this.src='data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;400&quot; height=&quot;240&quot;><rect fill=&quot;%23c0392b&quot; width=&quot;400&quot; height=&quot;240&quot;/></svg>'"/>
+              <div class="flip-front-m-overlay ov-red"></div>
+              <div class="flip-front-m-label"><h3>Desain Komunikasi Visual</h3></div>
+              <div class="flip-front-m-body">
+                <div><span class="jurusan-badge badge-red">DKV</span><p>Desainer kreatif menghasilkan karya visual menarik sesuai industri modern.</p></div>
+                <div class="flip-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:13px;height:13px"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Ketuk untuk detail</div>
+              </div>
+            </div>
+            <div class="flip-back-m back-red">
+              <h4>Desain Komunikasi Visual</h4>
+              <p class="back-sub" style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:14px;">Kreatif · Visual · Digital</p>
+              <p class="back-section-title">Kompetensi</p>
+              <ul class="back-list">
+                <li>Desain Grafis Digital</li>
+                <li>Editing Foto &amp; Video</li>
+                <li>Branding &amp; Konten Kreatif</li>
+                <li>Fotografi dan Videografi</li>
+              </ul>
+              <hr class="back-divider"/>
+              <p class="back-section-title">Karir</p>
+              <div class="back-pills">
+                <span class="back-pill">Graphic Designer</span><span class="back-pill">Content Creator</span><span class="back-pill">Video Editor</span>
+              </div>
+              <div class="back-return" style="margin-top:auto;padding-top:12px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:13px;height:13px"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Ketuk kembali</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="swipe-dots">
+      <div class="swipe-dot active" id="sd0"></div>
+      <div class="swipe-dot" id="sd1"></div>
+      <div class="swipe-dot" id="sd2"></div>
     </div>
   </div>
 
-  <!-- ── HERO ── -->
-  <section class="hero-section min-h-screen flex flex-col items-center justify-center text-center px-6 pt-16 pb-10">
-    <h1 class="text-white text-3xl font-extrabold leading-tight mb-3">
-      SMK BUDI BAKTI<br>CIWIDEY
-    </h1>
-    <p class="text-white/80 text-sm mb-16">Cerdas Teknologi, Kuat Karakter, Siap Dunia Kerja</p>
-    <div class="w-full max-w-xs flex flex-col gap-4">
-      <a href="#footer" class="bg-blue-900 text-white text-sm font-semibold tracking-widest rounded-full py-4 px-6 text-center hover:bg-blue-800 transition">
-        DAFTAR SEKARANG
-      </a>
-      <a href="#program" class="border-2 border-white text-white text-sm font-semibold tracking-widest rounded-full py-4 px-6 text-center hover:bg-white hover:text-blue-900 transition">
-        LIHAT JURUSAN
-      </a>
-    </div>
-  </section>
+</section>
 
-  <!-- ── PROGRAM KEAHLIAN ── -->
-  <section id="program">
-    <div class="bg-white py-5 text-center">
-      <h2 class="font-bold text-base tracking-wide text-gray-800">PROGRAM KEAHLIAN</h2>
-      <p class="text-gray-400 text-xs mt-1">Geser kartu untuk melihat detail jurusan</p>
-    </div>
-
-    <!-- ── CARD 1: Rekayasa Perangkat Lunak ── -->
-    <div class="jurusan-wrapper" id="wrap-rpl">
-      <div class="jurusan-inner" id="inner-rpl">
-        <!-- FRONT -->
-        <div class="jurusan-front program-yellow px-6 py-10 min-h-[280px] flex flex-col justify-end">
-          <h3 class="text-white font-extrabold text-2xl leading-tight mb-3">REKAYASA<br>PERANGKAT LUNAK</h3>
-          <p class="text-white/80 text-sm leading-relaxed">
-            Mempelajari pemrograman, pengembangan website, aplikasi, dan sistem informasi menggunakan teknologi modern serta praktik industri digital.
-          </p>
-        </div>
-        <!-- DETAIL -->
-        <div class="jurusan-detail detail-yellow px-6 py-8 flex flex-col">
-          <h3 class="text-white font-extrabold text-xl leading-tight mb-2">REKAYASA<br>PERANGKAT LUNAK</h3>
-          <p class="text-white/70 text-xs leading-relaxed mb-5">
-            Mencetak programmer dan developer yang kreatif, inovatif, dan siap bersaing di dunia teknologi.
-          </p>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <p class="text-white font-bold text-xs tracking-wide mb-3">KOMPETENSI UTAMA</p>
-              <ul class="space-y-2">
-                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Pemrograman Website &amp; Aplikasi</li>
-                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Pembuatan UI/UX Design</li>
-                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Database &amp; Sistem Informasi</li>
-                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Praktik Project Berbasis Industri</li>
-                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Sertifikasi Kompetensi IT</li>
-              </ul>
-            </div>
-            <div>
-              <p class="text-white font-bold text-xs tracking-wide mb-3">PELUANG KARIR</p>
-              <ul class="space-y-2">
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Web Developer</li>
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Mobile Developer</li>
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>UI/UX Designer</li>
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Software Engineer</li>
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>IT Support</li>
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Freelancer Digital</li>
-              </ul>
-            </div>
-          </div>
-          <!-- back hint -->
-          <div class="back-hint">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-            </svg>
-            <span>Geser kembali</span>
-          </div>
+<!-- ══ MASALAH & SOLUSI ══ -->
+<section id="masalah">
+  <div class="section-header reveal">
+    <div class="section-tag">Masalah &amp; Solusi</div>
+    <h2 class="section-title">Kami Hadir Untuk<br>Menjawab Kebutuhan Anda</h2>
+  </div>
+  <div style="padding: 0 5% 70px;">
+    <div class="ms-grid">
+      <div class="ms-card problem reveal">
+        <h3>⚠ Masalah yang Dihadapi</h3>
+        <div class="problem-list">
+          <div class="problem-item"><div class="problem-icon">?</div><p>Kurangnya informasi tentang sekolah kejuruan yang tepat dan berkualitas</p></div>
+          <div class="problem-item"><div class="problem-icon">⚡</div><p>Sulit memilih jurusan yang sesuai minat, bakat, dan kemampuan</p></div>
+          <div class="problem-item"><div class="problem-icon">🔍</div><p>Fasilitas sekolah kurang diketahui oleh calon siswa dan orang tua</p></div>
+          <div class="problem-item"><div class="problem-icon">📋</div><p>Proses pendaftaran yang terasa rumit dan kurang jelas informasinya</p></div>
         </div>
       </div>
-      <!-- Swipe hint on front -->
-      <div class="swipe-hint">
-        <span>Geser</span>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-        </svg>
-      </div>
-      <!-- Dot indicators -->
-      <div class="dot-indicators">
-        <div class="dot active" id="dot-rpl-0"></div>
-        <div class="dot" id="dot-rpl-1"></div>
+      <div class="ms-card solution reveal reveal-d1">
+        <h3>✓ Solusi Kami</h3>
+        <div class="solution-list">
+          <div class="solution-item"><div class="solution-num">1</div><div class="solution-item-text"><strong>Informasi Sekolah yang Lengkap</strong><p>Website lengkap memudahkan calon siswa mengetahui jurusan, fasilitas, dan pendaftaran.</p></div></div>
+          <div class="solution-item"><div class="solution-num">2</div><div class="solution-item-text"><strong>Penjelasan Jurusan &amp; Peluang Karir</strong><p>Setiap jurusan dijelaskan lengkap dengan peluang karier agar mudah menentukan pilihan.</p></div></div>
+          <div class="solution-item"><div class="solution-num">3</div><div class="solution-item-text"><strong>Fasilitas Sekolah Transparan</strong><p>Fasilitas ditampilkan melalui foto, video, dan deskripsi informatif.</p></div></div>
+          <div class="solution-item"><div class="solution-num">4</div><div class="solution-item-text"><strong>Alur Pendaftaran yang Jelas</strong><p>Informasi pendaftaran lengkap: alur, syarat, jadwal, dan tahapan seleksi.</p></div></div>
+        </div>
       </div>
     </div>
+  </div>
+</section>
 
-    <!-- ── CARD 2: Bisnis Retail ── -->
-    <div class="jurusan-wrapper" id="wrap-bisnis">
-      <div class="jurusan-inner" id="inner-bisnis">
-        <!-- FRONT -->
-        <div class="jurusan-front program-blue px-6 py-10 min-h-[280px] flex flex-col justify-end">
-          <h3 class="text-white font-extrabold text-2xl leading-tight mb-3">BISNIS RETAIL<br>PEMASARAN</h3>
-          <p class="text-white/80 text-sm leading-relaxed">
-            Mempelajari pengelolaan bisnis, pemasaran, pelayanan pelanggan, dan manajemen penjualan dengan sistem retail modern.
-          </p>
+<!-- ══ BENEFIT ══ -->
+<section id="benefit">
+  <div class="benefit-inner">
+    <div class="section-header reveal" style="padding-top:0;padding-bottom:40px;">
+      <div class="section-tag" style="color:var(--gold2);">Keuntungan</div>
+      <h2 class="section-title" style="color:#fff;">Mengapa Memilih<br>SMK Budi Bakti?</h2>
+    </div>
+    <div class="benefit-grid">
+      <div class="benefit-item reveal">
+        <div class="benefit-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8"/><path d="M8 12h8M8 16h5"/>
+          </svg>
         </div>
-        <!-- DETAIL -->
-        <div class="jurusan-detail detail-blue px-6 py-8 flex flex-col">
-          <h3 class="text-white font-extrabold text-xl leading-tight mb-2">BISNIS<br>RETAIL</h3>
-          <p class="text-white/70 text-xs leading-relaxed mb-5">
-            Mencetak tenaga bisnis retail yang profesional, komunikatif, dan siap kerja di dunia usaha maupun industri.
-          </p>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <p class="text-white font-bold text-xs tracking-wide mb-3">KOMPETENSI UTAMA</p>
-              <ul class="space-y-2">
-                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Manajemen Toko Retail</li>
-                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Pelayanan Konsumen Profesional</li>
-                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Administrasi &amp; Kasir Digital</li>
-                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Strategi Pemasaran Produk</li>
-                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Praktik Kewirausahaan Retail</li>
-              </ul>
-            </div>
-            <div>
-              <p class="text-white font-bold text-xs tracking-wide mb-3">PELUANG KARIR</p>
-              <ul class="space-y-2">
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Kasir Modern</li>
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Staff Minimarket</li>
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Sales Promotion</li>
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Admin Penjualan</li>
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Supervisor Retail</li>
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Wirausaha</li>
-              </ul>
-            </div>
-          </div>
-          <div class="back-hint">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-            </svg>
-            <span>Geser kembali</span>
-          </div>
+        <h4>Siap Kerja Setelah Lulus</h4>
+        <p>Keterampilan dan pengalaman yang sesuai kebutuhan dunia kerja sehingga siswa lebih siap menghadapi karier.</p>
+      </div>
+      <div class="benefit-item reveal reveal-d1">
+        <div class="benefit-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
         </div>
+        <h4>Pengalaman Praktik Lebih Banyak</h4>
+        <p>Pembelajaran berbasis praktik membantu siswa memahami materi secara langsung di bidang yang dipelajari.</p>
       </div>
-      <div class="swipe-hint">
-        <span>Geser</span>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-        </svg>
+      <div class="benefit-item reveal reveal-d2">
+        <div class="benefit-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m1.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          </svg>
+        </div>
+        <h4>Mengembangkan Kreativitas</h4>
+        <p>Mendukung siswa mengembangkan kreativitas, bakat, dan minat melalui pembelajaran dan ekstrakurikuler.</p>
       </div>
-      <div class="dot-indicators">
-        <div class="dot active" id="dot-bisnis-0"></div>
-        <div class="dot" id="dot-bisnis-1"></div>
+      <div class="benefit-item reveal reveal-d3">
+        <div class="benefit-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+          </svg>
+        </div>
+        <h4>Pengembangan Potensi Siswa</h4>
+        <p>Membantu siswa mengembangkan potensi, kemampuan, dan bakat agar dapat berkembang secara maksimal.</p>
       </div>
     </div>
+  </div>
+</section>
 
-    <!-- ── CARD 3: Desain Komunikasi Visual ── -->
-    <div class="jurusan-wrapper" id="wrap-dkv">
-      <div class="jurusan-inner" id="inner-dkv">
-        <!-- FRONT -->
-        <div class="jurusan-front program-red px-6 py-10 min-h-[280px] flex flex-col justify-end">
-          <h3 class="text-white font-extrabold text-2xl leading-tight mb-3">DESAIN KOMUNIKASI<br>VISUAL</h3>
-          <p class="text-white/80 text-sm leading-relaxed">
-            Mempelajari desain grafis, ilustrasi digital, fotografi, videografi, dan branding kreatif menggunakan software industri kreatif.
-          </p>
-        </div>
-        <!-- DETAIL -->
-        <div class="jurusan-detail detail-red px-6 py-8 flex flex-col">
-          <h3 class="text-white font-extrabold text-xl leading-tight mb-2">DESAIN KOMUNIKASI<br>VISUAL</h3>
-          <p class="text-white/70 text-xs leading-relaxed mb-5">
-            Mencetak desainer kreatif yang mampu menghasilkan karya visual menarik dan komunikatif sesuai kebutuhan industri modern.
-          </p>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <p class="text-white font-bold text-xs tracking-wide mb-3">KOMPETENSI UTAMA</p>
-              <ul class="space-y-2">
-                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Desain Grafis Digital</li>
-                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Editing Foto &amp; Video</li>
-                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Branding &amp; Konten Kreatif</li>
-                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Fotografi dan Videografi</li>
-                <li class="flex items-start gap-2 text-white/80 text-xs"><span class="mt-0.5 w-3 h-3 flex-shrink-0 border border-white/60 rounded-sm flex items-center justify-center">✓</span>Praktik Industri Kreatif</li>
-              </ul>
-            </div>
-            <div>
-              <p class="text-white font-bold text-xs tracking-wide mb-3">PELUANG KARIR</p>
-              <ul class="space-y-2">
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Graphic Designer</li>
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Content Creator</li>
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Video Editor</li>
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Illustrator</li>
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Fotografer</li>
-                <li class="flex items-start gap-1 text-white/80 text-xs"><span class="text-white/50 flex-shrink-0">•</span>Creative Designer</li>
-              </ul>
-            </div>
-          </div>
-          <div class="back-hint">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-            </svg>
-            <span>Geser kembali</span>
-          </div>
+<!-- ══ LANGKAH PENDAFTARAN ══ -->
+<section id="alur">
+  <div class="section-header reveal">
+    <div class="section-tag">Cara Daftar</div>
+    <h2 class="section-title">Alur Pendaftaran<br>Mudah &amp; Transparan</h2>
+    <p class="section-sub">Hanya 4 langkah untuk bergabung dengan SMK Budi Bakti Ciwidey.</p>
+  </div>
+  <div style="padding: 0 5% 70px;">
+    <div class="steps-grid">
+      <div class="step-card reveal"><div class="step-number">01</div><div class="step-badge-n">1</div><h4>Membuat Akun Pendaftaran</h4><p>Calon siswa membuat akun dan mengisi data diri pada sistem pendaftaran SMBP sekolah.</p></div>
+      <div class="step-card reveal reveal-d1"><div class="step-number">02</div><div class="step-badge-n">2</div><h4>Mengunggah Berkas Persyaratan</h4><p>Upload dokumen seperti rapor, kartu keluarga, dan persyaratan lainnya sesuai ketentuan.</p></div>
+      <div class="step-card reveal reveal-d2"><div class="step-number">03</div><div class="step-badge-n">3</div><h4>Seleksi dan Verifikasi Data</h4><p>Pihak sekolah melakukan pengecekan data serta proses seleksi calon siswa baru.</p></div>
+      <div class="step-card reveal reveal-d3"><div class="step-number">04</div><div class="step-badge-n">4</div><h4>Pengumuman &amp; Daftar Ulang</h4><p>Calon siswa yang lolos seleksi melakukan daftar ulang sesuai jadwal yang ditentukan.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONI ══ -->
+<section id="testimoni">
+  <div class="testi-inner">
+    <div class="section-header reveal" style="padding-top:0;padding-bottom:40px;">
+      <div class="section-tag" style="color:var(--gold2);">Testimoni</div>
+      <h2 class="section-title" style="color:#fff;">Apa Kata Mereka<br>Tentang Kami?</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Saya melihat proses pembelajaran yang berjalan dengan baik, tertib, serta penuh semangat. Sekolah ini memiliki komitmen dalam membentuk karakter siswa serta membekali keterampilan yang sesuai dengan kebutuhan dunia kerja."</p>
+        <div class="testi-author">
+          <img src="assets/bpk.jpeg" alt="Tata Sudrajat" class="testi-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+          <div class="testi-fallback" style="display:none;">T</div>
+          <div><div class="testi-name">Tata Sudrajat</div><div class="testi-role">Dinas Pendidikan Provinsi Jawa Barat</div></div>
         </div>
       </div>
-      <div class="swipe-hint">
-        <span>Geser</span>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-        </svg>
+      <div class="testi-card reveal reveal-d1">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Saya mendapatkan banyak ilmu dan pengalaman dari pembelajaran maupun organisasi di sekolah. Meski bekerja di bidang ritel, sekolah telah melatih mental dan kesiapan kerja saya dengan sangat baik."</p>
+        <div class="testi-author">
+          <img src="assets/alumni1.jpeg" alt="Iqbal Abdul" class="testi-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+          <div class="testi-fallback" style="display:none;">I</div>
+          <div><div class="testi-name">Iqbal Abdul</div><div class="testi-role">Alumni RPL 2025 · Alfamart</div></div>
+        </div>
       </div>
-      <div class="dot-indicators">
-        <div class="dot active" id="dot-dkv-0"></div>
-        <div class="dot" id="dot-dkv-1"></div>
+      <div class="testi-card reveal reveal-d2">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Ilmu dari SMK BBC RPL sangat relevan dengan karier saya di digital marketing. Cara berpikir logis dan kemampuan membaca data sangat membantu saat mengelola iklan di SGS PRO."</p>
+        <div class="testi-author">
+          <img src="assets/ibu.jpg" alt="Lisyeu Andriani" class="testi-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+          <div class="testi-fallback" style="display:none;">L</div>
+          <div><div class="testi-name">Lisyeu Andriani</div><div class="testi-role">Alumni RPL 2022 · SGS PRO</div></div>
+        </div>
       </div>
     </div>
+  </div>
+</section>
 
-  </section>
+<!-- ══ CTA ══ -->
+<section class="cta-section">
+  <div class="cta-inner reveal">
+    <h2>Siap Bergabung<br>Bersama Kami?</h2>
+    <p>Daftarkan diri kamu sekarang dan mulai perjalanan menuju masa depan yang lebih cerah bersama SMK Budi Bakti Ciwidey.</p>
+    <a href="#footer" class="btn-cta btn-cta-primary">Daftar Sekarang</a>
+  </div>
+</section>
 
-  <!-- ── MASALAH & SOLUSI ── -->
-  <section id="masalah" class="bg-gray-50 px-5 py-10">
-    <div class="bg-white rounded-2xl shadow-sm p-6 mb-5">
-      <h3 class="font-bold text-center text-sm mb-4">MASALAH YANG SERING DIHADAPI</h3>
-      <ul class="space-y-2 text-sm text-gray-600">
-        <li class="flex items-start gap-2"><span class="text-gray-400 mt-0.5">•</span> Kurangnya informasi tentang sekolah kejuruan yang tepat dan berkualitas</li>
-        <li class="flex items-start gap-2"><span class="text-gray-400 mt-0.5">•</span> Sulit memilih jurusan yang sesuai minat, bakat, dan kemampuan</li>
-        <li class="flex items-start gap-2"><span class="text-gray-400 mt-0.5">•</span> Fasilitas sekolah kurang diketahui oleh calon siswa dan orang tua</li>
-        <li class="flex items-start gap-2"><span class="text-gray-400 mt-0.5">•</span> Proses pendaftaran yang terasa rumit dan kurang jelas informasinya</li>
+<!-- ══ FOOTER ══ -->
+<footer id="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo-row">
+        <img src="assets/logobbc.png" alt="Logo" onerror="this.style.display='none'"/>
+        <div class="footer-school-name">SMK Budi Bakti Ciwidey</div>
+      </div>
+      <p>Mencetak generasi unggul yang kompeten, berkarakter, dan siap menghadapi tantangan dunia kerja modern.</p>
+      <div class="footer-address"><span>📍</span><span>Jl. Babakan Tiga No.82, Ciwidey, Kab. Bandung, Jawa Barat 40973</span></div>
+    </div>
+    <div class="footer-col">
+      <h4>Navigasi</h4>
+      <ul class="footer-links">
+        <li><a href="#program">Program Keahlian</a></li>
+        <li><a href="#masalah">Keunggulan</a></li>
+        <li><a href="#benefit">Benefit</a></li>
+        <li><a href="#alur">Alur Pendaftaran</a></li>
+        <li><a href="#testimoni">Testimoni</a></li>
       </ul>
     </div>
-    <div class="bg-white rounded-2xl shadow-sm p-6">
-      <h3 class="font-bold text-center text-sm mb-6">SOLUSI</h3>
-      <div class="space-y-6">
-        <div class="flex gap-4">
-          <div class="step-badge">1</div>
-          <div>
-            <p class="font-bold text-sm mb-1">Informasi Sekolah yang Lengkap</p>
-            <p class="text-sm text-gray-500 leading-relaxed">Website sekolah yang lengkap dan mudah diakses memudahkan calon siswa dan orang tua mengetahui informasi jurusan, fasilitas, kegiatan, prestasi, dan proses pendaftaran.</p>
-          </div>
-        </div>
-        <div class="flex gap-4">
-          <div class="step-badge">2</div>
-          <div>
-            <p class="font-bold text-sm mb-1">Penjelasan Jurusan &amp; Peluang Karir</p>
-            <p class="text-sm text-gray-500 leading-relaxed">Setiap jurusan dijelaskan beserta peluang kariernya agar siswa lebih mudah menentukan pilihan sesuai minat, bakat, dan kemampuan yang dimiliki.</p>
-          </div>
-        </div>
-        <div class="flex gap-4">
-          <div class="step-badge">3</div>
-          <div>
-            <p class="font-bold text-sm mb-1">Fasilitas Sekolah yang Transparan</p>
-            <p class="text-sm text-gray-500 leading-relaxed">Fasilitas sekolah ditampilkan melalui foto, video, dan deskripsi informatif sehingga calon siswa dan orang tua mengetahui sarana pembelajaran yang tersedia.</p>
-          </div>
-        </div>
-        <div class="flex gap-4">
-          <div class="step-badge">4</div>
-          <div>
-            <p class="font-bold text-sm mb-1">Alur Pendaftaran yang Jelas</p>
-            <p class="text-sm text-gray-500 leading-relaxed">Informasi pendaftaran yang lengkap mencakup alur, syarat, jadwal, dan tahapan agar calon siswa dan orang tua lebih mudah memahami proses pendaftaran sekolah.</p>
-          </div>
-        </div>
+    <div class="footer-col">
+      <h4>Hubungi Kami</h4>
+      <div class="footer-contact">
+        <div class="contact-row"><span>✉️</span><div><div class="contact-label">Email</div><div class="contact-val">budibakticiwidey.smk@gmail.com</div></div></div>
+        <div class="contact-row"><span>📞</span><div><div class="contact-label">Telepon</div><div class="contact-val">0225928262</div></div></div>
       </div>
     </div>
-  </section>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 SMK Budi Bakti Ciwidey. All rights reserved.</div>
+    <div class="footer-dev">Designed &amp; Developed by <span>Amethyst Group</span></div>
+  </div>
+</footer>
 
-  <!-- ── BENEFIT ── -->
-  <section id="benefit" class="benefit-section px-5 py-14">
-    <h2 class="text-white font-bold text-center text-base tracking-wide mb-8">Keuntungan</h2>
-    <div class="space-y-4">
-      <div class="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl p-5 flex gap-4 items-start">
-        <div class="benefit-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.8">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
-          </svg>
-        </div>
-        <div>
-          <p class="text-white font-bold text-sm mb-1">Siap Kerja Setelah Lulus</p>
-          <p class="text-white/75 text-sm leading-relaxed">SMK Budi Bakti Ciwidey membantu siswa memiliki keterampilan dan pengalaman yang sesuai dengan kebutuhan dunia kerja sehingga siswa lebih siap menghadapi karier setelah lulus.</p>
-        </div>
-      </div>
-      <div class="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl p-5 flex gap-4 items-start">
-        <div class="benefit-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.8">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
-        </div>
-        <div>
-          <p class="text-white font-bold text-sm mb-1">Pengalaman Praktik Lebih Banyak</p>
-          <p class="text-white/75 text-sm leading-relaxed">Pembelajaran berbasis praktik membantu siswa memahami materi secara langsung dan meningkatkan kemampuan dalam bidang yang dipelajari.</p>
-        </div>
-      </div>
-      <div class="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl p-5 flex gap-4 items-start">
-        <div class="benefit-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.8">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m1.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-          </svg>
-        </div>
-        <div>
-          <p class="text-white font-bold text-sm mb-1">Mengembangkan Kreativitas dan Bakat</p>
-          <p class="text-white/75 text-sm leading-relaxed">Sekolah mendukung siswa untuk mengembangkan kreativitas, bakat, dan minat melalui berbagai kegiatan pembelajaran maupun ekstrakurikuler.</p>
-        </div>
-      </div>
-      <div class="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl p-5 flex gap-4 items-start">
-        <div class="benefit-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.8">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-          </svg>
-        </div>
-        <div>
-          <p class="text-white font-bold text-sm mb-1">Mendukung Pengembangan Potensi Siswa</p>
-          <p class="text-white/75 text-sm leading-relaxed">SMK Budi Bakti Ciwidey membantu siswa mengembangkan potensi, kemampuan, dan bakat yang dimiliki agar dapat berkembang secara maksimal.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+<script>
+  // Navbar scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 40);
+  });
 
-  <!-- ── HOW IT WORKS ── -->
-  <section id="alur" class="bg-gray-50 px-5 py-10">
-    <div class="bg-white rounded-2xl shadow-sm p-6">
-      <h3 class="font-bold text-center text-sm mb-7">Langkah-langkah</h3>
-      <div class="space-y-6">
-        <div class="flex gap-4">
-          <div class="step-badge">1</div>
-          <div>
-            <p class="font-bold text-sm mb-1">Membuat Akun Pendaftaran</p>
-            <p class="text-sm text-gray-500 leading-relaxed">Calon siswa membuat akun dan mengisi data diri pada sistem pendaftaran SMBP sekolah.</p>
-          </div>
-        </div>
-        <div class="border-t border-gray-100 pt-6 flex gap-4">
-          <div class="step-badge">2</div>
-          <div>
-            <p class="font-bold text-sm mb-1">Mengunggah Berkas Persyaratan</p>
-            <p class="text-sm text-gray-500 leading-relaxed">Mengupload dokumen seperti rapor, kartu keluarga, dan persyaratan lainnya sesuai ketentuan.</p>
-          </div>
-        </div>
-        <div class="border-t border-gray-100 pt-6 flex gap-4">
-          <div class="step-badge">3</div>
-          <div>
-            <p class="font-bold text-sm mb-1">Seleksi dan Verifikasi Data</p>
-            <p class="text-sm text-gray-500 leading-relaxed">Pihak sekolah melakukan pengecekan data serta proses seleksi calon siswa.</p>
-          </div>
-        </div>
-        <div class="border-t border-gray-100 pt-6 flex gap-4">
-          <div class="step-badge">4</div>
-          <div>
-            <p class="font-bold text-sm mb-1">Pengumuman dan Daftar Ulang</p>
-            <p class="text-sm text-gray-500 leading-relaxed">Calon siswa yang lolos seleksi melakukan daftar ulang sesuai jadwal yang telah ditentukan sekolah.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  // Mobile menu
+  function openMenu() {
+    document.getElementById('mDrawer').classList.add('open');
+    document.getElementById('mOverlay').classList.add('open');
+  }
+  function closeMenu() {
+    document.getElementById('mDrawer').classList.remove('open');
+    document.getElementById('mOverlay').classList.remove('open');
+  }
 
-  <!-- ── TESTIMONI ── -->
-  <section id="testimoni" class="testimoni-section px-5 py-14">
-    <h2 class="text-white font-bold text-center text-base tracking-wide mb-8">TESTIMONI</h2>
-    <div class="space-y-4">
-      <div class="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl p-5">
-        <div class="flex items-center gap-3 mb-3">
-          <img src="assets/bpk.jpeg" alt="Foto Tata Sudrajat" class="avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
-          <div class="avatar-fallback" style="display:none;">T</div>
-          <div>
-            <p class="text-white font-bold text-sm">Tata Sudrajat</p>
-            <p class="text-white/50 text-xs">Dinas Pendidikan Provinsi Jawa Barat</p>
-          </div>
-        </div>
-        <p class="text-white/75 text-sm leading-relaxed">Saya melihat proses pembelajaran yang berjalan dengan baik, tertib, serta penuh semangat. Sekolah ini memiliki komitmen dalam membentuk karakter siswa serta membekali keterampilan yang sesuai dengan kebutuhan dunia kerja.</p>
-      </div>
-      <div class="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl p-5">
-        <div class="flex items-center gap-3 mb-3">
-          <img src="assets/alumni1.jpeg" alt="Foto Iqbal Abdul" class="avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
-          <div class="avatar-fallback" style="display:none;">I</div>
-          <div>
-            <p class="text-white font-bold text-sm">Iqbal Abdul</p>
-            <p class="text-white/50 text-xs">Alumni RPL 2025 · Kini di Alfamart</p>
-          </div>
-        </div>
-        <p class="text-white/75 text-sm leading-relaxed">Saya mendapatkan banyak ilmu dan pengalaman dari pembelajaran maupun organisasi di sekolah. Meski bekerja di bidang ritel, sekolah telah melatih mental dan kesiapan kerja saya dengan sangat baik.</p>
-      </div>
-      <div class="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl p-5">
-        <div class="flex items-center gap-3 mb-3">
-          <img src="assets/ibu.jpg" alt="Foto Lisyeu Andriani" class="avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
-          <div class="avatar-fallback" style="display:none;">L</div>
-          <div>
-            <p class="text-white font-bold text-sm">Lisyeu Andriani</p>
-            <p class="text-white/50 text-xs">Alumni RPL Angkatan 2022 · SGS PRO</p>
-          </div>
-        </div>
-        <p class="text-white/75 text-sm leading-relaxed">Ilmu dari SMK BBC RPL ternyata sangat relevan dengan karier saya di digital marketing. Cara berpikir logis, kemampuan membaca data, dan pemahaman sistem yang saya pelajari sangat membantu saat mengelola iklan di SGS PRO — perusahaan Agent Properti tempat saya berkarier tepat setelah lulus.</p>
-      </div>
-    </div>
-  </section>
+  // Desktop flip
+  function toggleFlip(card) {
+    card.classList.toggle('flipped');
+  }
 
-  <!-- ── CTA ── -->
-  <section class="bg-white px-6 py-16 text-center">
-    <h2 class="font-extrabold text-2xl leading-tight mb-4 text-gray-900">
-      SIAP MENJADI BAGIAN<br>DARI KAMI?
-    </h2>
-    <p class="text-gray-500 text-sm leading-relaxed mb-10 max-w-xs mx-auto">
-      Daftarkan diri kamu sekarang dan mulai perjalanan menuju masa depan yang lebih cerah bersama SMK Budi Bakti Ciwidey.
-    </p>
-    <a href="#footer" class="bg-blue-900 text-white text-sm font-semibold tracking-widest rounded-full py-4 px-8 inline-block hover:bg-blue-800 transition">
-      DAFTAR SEKARANG
-    </a>
-  </section>
+  // Mobile flip
+  function toggleFlipM(card) {
+    card.classList.toggle('flipped');
+  }
 
-  <!-- ── FOOTER ── -->
-  <footer id="footer" class="bg-blue-950 px-6 py-10 text-white">
-    <h3 class="font-bold text-base mb-2">SEKOLAH SMK BUDI BAKTI CIWIDEY</h3>
-    <div class="flex items-start gap-2 text-white/60 text-sm mb-7">
-      <span class="mt-0.5">🗺️</span>
-      <span>Jl. Babakan Tiga No.82, Ciwidey, Kec. Ciwidey, Kabupaten Bandung, Jawa Barat 40973</span>
-    </div>
-    <h4 class="font-bold text-sm mb-4">Hubungi Kami</h4>
-    <div class="space-y-3">
-      <div class="flex items-start gap-3">
-        <span class="text-white/60 mt-0.5">✉️</span>
-        <div>
-          <p class="text-white/40 text-xs">Email</p>
-          <p class="text-white/80 text-sm">budibakticiwidey.smk@gmail.com</p>
-        </div>
-      </div>
-      <div class="flex items-start gap-3">
-        <span class="text-white/60 mt-0.5">📞</span>
-        <div>
-          <p class="text-white/40 text-xs">No. Telp</p>
-          <p class="text-white/80 text-sm">0225928262</p>
-        </div>
-      </div>
-    </div>
-    <div class="border-t border-white/10 mt-10 pt-5">
-      <p class="text-white/30 text-xs">&lt;/&gt; DESIGNED & DEVELOPED BY</p>
-      <p class="text-white/50 text-sm font-semibold">Amethyst Group</p>
-    </div>
-  </footer>
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => io.observe(el));
 
-  <script>
-    /* ── Navbar side panel ── */
-    function openMenu() {
-      const isOpen = document.getElementById('mobileMenu').classList.contains('open');
-      if (isOpen) closeMenu();
-      else {
-        document.getElementById('mobileMenu').classList.add('open');
-        document.getElementById('menuOverlay').classList.add('open');
-      }
-    }
-    function closeMenu() {
-      document.getElementById('mobileMenu').classList.remove('open');
-      document.getElementById('menuOverlay').classList.remove('open');
-    }
-
-    /* ── SWIPE / DRAG logic for jurusan cards ── */
-    const SWIPE_THRESHOLD = 50; // px minimum swipe distance to trigger
-
-    function initSwipe(wrapId, dotPrefix) {
-      const wrapper = document.getElementById(wrapId);
-      const inner   = wrapper.querySelector('.jurusan-inner');
-      let startX = 0;
-      let currentX = 0;
-      let isDragging = false;
-      let isOpen = false;
-
-      function getOffset() {
-        return isOpen ? -50 : 0; // percent of inner width
-      }
-
-      function applyDrag(deltaX) {
-        // Convert deltaX (px) to percentage of inner width
-        const innerW = inner.offsetWidth; // 200% of wrapper
-        const deltaPct = (deltaX / innerW) * 100;
-        const base = getOffset();
-        let next = base + deltaPct;
-        // Clamp: front can't go right past 0, detail can't go left past -50
-        next = Math.max(-50, Math.min(0, next));
-        inner.style.transform = `translateX(${next}%)`;
-      }
-
-      function settle(deltaX) {
-        inner.classList.remove('no-transition');
-        if (!isOpen && deltaX < -SWIPE_THRESHOLD) {
-          // swipe left → open detail
-          isOpen = true;
-          wrapper.classList.add('open');
-          inner.style.transform = '';
-          updateDots(dotPrefix, 1);
-        } else if (isOpen && deltaX > SWIPE_THRESHOLD) {
-          // swipe right → back to front
-          isOpen = false;
-          wrapper.classList.remove('open');
-          inner.style.transform = '';
-          updateDots(dotPrefix, 0);
-        } else {
-          // snap back
-          inner.style.transform = isOpen ? 'translateX(-50%)' : '';
-        }
-      }
-
-      // ── Touch events ──
-      wrapper.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-        isDragging = true;
-        inner.classList.add('no-transition');
-      }, { passive: true });
-
-      wrapper.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        currentX = e.touches[0].clientX;
-        applyDrag(currentX - startX);
-      }, { passive: true });
-
-      wrapper.addEventListener('touchend', () => {
-        if (!isDragging) return;
-        isDragging = false;
-        settle(currentX - startX);
+  // Mobile swipe dot indicator
+  const scroller = document.getElementById('jurusanScroller');
+  if (scroller) {
+    scroller.addEventListener('scroll', () => {
+      const idx = Math.round(scroller.scrollLeft / scroller.offsetWidth);
+      [0,1,2].forEach(i => {
+        const dot = document.getElementById('sd' + i);
+        if (dot) dot.classList.toggle('active', i === idx);
       });
-
-      // ── Mouse drag events (desktop) ──
-      wrapper.addEventListener('mousedown', (e) => {
-        startX = e.clientX;
-        isDragging = true;
-        inner.classList.add('no-transition');
-        wrapper.classList.add('grabbing');
-        e.preventDefault();
-      });
-
-      window.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        currentX = e.clientX;
-        applyDrag(currentX - startX);
-      });
-
-      window.addEventListener('mouseup', () => {
-        if (!isDragging) return;
-        isDragging = false;
-        wrapper.classList.remove('grabbing');
-        settle(currentX - startX);
-      });
-    }
-
-    function updateDots(prefix, activeIndex) {
-      document.getElementById(`dot-${prefix}-0`).classList.toggle('active', activeIndex === 0);
-      document.getElementById(`dot-${prefix}-1`).classList.toggle('active', activeIndex === 1);
-    }
-
-    // Init all three cards
-    initSwipe('wrap-rpl',    'rpl');
-    initSwipe('wrap-bisnis', 'bisnis');
-    initSwipe('wrap-dkv',    'dkv');
-  </script>
+    });
+  }
+</script>
 </body>
 </html>
